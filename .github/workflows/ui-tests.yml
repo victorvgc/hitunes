@@ -1,0 +1,43 @@
+name: Screenshot Verification (Roborazzi)
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+    types: [ opened, synchronize, reopened ] # Triggers on PR creation, new commits, or PR re-open
+
+jobs:
+  verify-screenshots:
+    name: Verify Visual Regression
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle (Integrated Cache)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant Execute Permission to Gradle Wrapper
+        run: chmod +x ./gradlew
+
+      # Runs verification across all submodules and continues even if some screens fail
+      - name: Verify Screenshots with Roborazzi
+        run: ./gradlew verifyRoborazziDebug --continue
+
+      # Uploads modified images and diff reports only if the validation fails
+      - name: Upload Visual Diffs
+        uses: actions/upload-artifact@v4
+        if: failure() 
+        with:
+          name: roborazzi-screenshot-diffs
+          path: |
+            **/build/outputs/roborazzi/
+            **/build/reports/roborazzi/
