@@ -1,4 +1,4 @@
-package com.skilltest.hitunes.ui.theme
+package com.skilltest.design.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

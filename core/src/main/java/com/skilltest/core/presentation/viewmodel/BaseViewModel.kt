@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: BaseUiEffect>(
-    initialState: State,
     private val reducer: BaseReducer<State, Intent, Effect>,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
@@ -41,13 +40,13 @@ abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: Bas
         intentQueue.tryEmit(intent)
     }
 
-    protected abstract fun Flow<State>.handleAnalytics(intent: Intent)
+    protected abstract fun Flow<State>.handleAnalytics(state: State, intent: Intent)
 
     private suspend fun Flow<Intent>.handleIntents() {
         this.collect { intent ->
             reducer
-                .reduce(intent)
-                .handleAnalytics(intent)
+                .reduce(state.value, intent)
+                .handleAnalytics(state.value, intent)
         }
     }
 }

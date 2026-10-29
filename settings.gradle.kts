@@ -25,3 +25,7 @@ dependencyResolutionManagement {
 rootProject.name = "HiTunes"
 include(":app")
 include(":core")
+include(":feature:songslist")
+include(":feature:songslist:shared")
+include(":feature:songslist:internal")
+include(":design")

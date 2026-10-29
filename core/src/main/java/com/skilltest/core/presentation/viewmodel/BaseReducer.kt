@@ -19,13 +19,13 @@ abstract class BaseReducer<State: BaseUiState, Intent: BaseIntent, Effect: BaseU
     private val mutableEffects = MutableSharedFlow<Effect>(replay = 0)
     val effects: SharedFlow<Effect> = mutableEffects.asSharedFlow()
 
-    suspend fun reduce(intent: Intent): Flow<State> {
-        mutableState.tryEmit(handleIntent(intent))
+    suspend fun reduce(state: State, intent: Intent): Flow<State> {
+        mutableState.tryEmit(handleIntent(state, intent))
 
-        return state
+        return this.state
     }
 
-    protected abstract suspend fun handleIntent(intent: Intent): State
+    protected abstract suspend fun handleIntent(state: State, intent: Intent): State
 
     protected fun sendEffect(effect: Effect) {
         mutableEffects.tryEmit(effect)

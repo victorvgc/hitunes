@@ -1,4 +1,4 @@
-package com.skilltest.hitunes.ui.theme
+package com.skilltest.design.theme
 
 import androidx.compose.ui.graphics.Color
 

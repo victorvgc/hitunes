@@ -51,6 +51,8 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":design"))
+    implementation(project(":feature:songslist:shared"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
