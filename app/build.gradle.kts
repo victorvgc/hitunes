@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 val versionMajor = 0
@@ -73,6 +74,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.timber)
+    implementation(libs.androidx.compose.nav)
+    implementation(libs.serialization)
+
+    implementation(libs.androidx.splash)
 }
 
 private fun generateVersionCode() =
