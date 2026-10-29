@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "HiTunes"
 include(":app")
+include(":core")
