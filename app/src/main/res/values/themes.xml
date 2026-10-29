@@ -2,4 +2,8 @@
 <resources>
 
     <style name="Theme.HiTunes" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.HiTunes.Splash" parent="Theme.SplashScreen">
+
+    </style>
 </resources>
