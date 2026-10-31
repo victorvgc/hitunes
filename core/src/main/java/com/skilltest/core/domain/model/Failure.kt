@@ -1,7 +1,7 @@
 package com.skilltest.core.domain.model
 
 open class Failure(
-    val msg: String? = null,
-    val exception: Exception? = null,
-    val code: Int? = null
+    open val msg: String? = null,
+    open val exception: Exception? = null,
+    open val code: Int? = null
 )

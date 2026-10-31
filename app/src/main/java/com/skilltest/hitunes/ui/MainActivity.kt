@@ -1,4 +1,4 @@
-package com.skilltest.hitunes
+package com.skilltest.hitunes.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

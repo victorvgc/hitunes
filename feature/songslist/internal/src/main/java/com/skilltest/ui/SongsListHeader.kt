@@ -128,7 +128,7 @@ fun ColumnScope.SongsListHeader(
                         onIntent(SongsListIntent.StartPerformSearch(term))
                     },
                     onStartedTyping = {
-                        onIntent(SongsListIntent.TypingSearchTerm)
+                        onIntent(SongsListIntent.TypingSearchTerm(it))
                     }
                 )
             }

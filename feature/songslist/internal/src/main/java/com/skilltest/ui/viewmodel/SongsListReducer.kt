@@ -3,6 +3,8 @@ package com.skilltest.ui.viewmodel
 import com.skilltest.core.presentation.viewmodel.BaseReducer
 import com.skilltest.core.presentation.viewmodel.Reduction
 import com.skilltest.domain.model.Track
+import com.skilltest.domain.usecase.SearchSongsByTermUseCase
+import com.skilltest.domain.usecase.ShouldShowSearchLoadingUseCase
 import com.skilltest.ui.viewmodel.SongsListEffect.NavigateToTrackDetails
 import com.skilltest.ui.viewmodel.SongsListEffect.NavigateToTrackOptions
 import com.skilltest.ui.viewmodel.SongsListIntent.PerformSearch
@@ -14,7 +16,10 @@ import com.skilltest.ui.viewmodel.SongsListStateChange.TrackListLoading
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
-class SongsListReducer : BaseReducer<SongsListState, SongsListIntent, SongsListEffect> {
+class SongsListReducer(
+    private val searchSongsByTermUseCase: SearchSongsByTermUseCase,
+    private val shouldShowSearchLoadingUseCase: ShouldShowSearchLoadingUseCase,
+) : BaseReducer<SongsListState, SongsListIntent, SongsListEffect> {
     override suspend fun reduce(
         previousState: SongsListState,
         intent: SongsListIntent
@@ -31,24 +36,16 @@ class SongsListReducer : BaseReducer<SongsListState, SongsListIntent, SongsListE
         }
 
         is PerformSearch -> {
-            delay(2.seconds) // todo: use case call
+            val result = searchSongsByTermUseCase(
+                SearchSongsByTermUseCase.Request(
+                    term = intent.term
+                )
+            )
 
             Reduction.state(
                 LoadedSearchResults(
                     intent.term,
-                    buildList {
-                        for (i in 1..10) {
-                            add(
-                                Track(
-                                    id = i.toString(),
-                                    name = "Searched Song $i",
-                                    artistName = "Artist $i",
-                                    artworkUrl = "https://www.diamondpet.com/wp-content/uploads/2021/03/kitten-sitting-on-floor-031621.jpg",
-                                    isExplicit = i % 2 == 0
-                                )
-                            )
-                        }
-                    }
+                    result.data?.trackList.orEmpty()
                 )
             )
         }
@@ -80,7 +77,8 @@ class SongsListReducer : BaseReducer<SongsListState, SongsListIntent, SongsListE
                                     name = "Song $i",
                                     artistName = "Artist $i",
                                     artworkUrl = "https://www.diamondpet.com/wp-content/uploads/2021/03/kitten-sitting-on-floor-031621.jpg",
-                                    isExplicit = i % 2 == 0
+                                    isExplicit = i % 2 == 0,
+                                    albumName = "Album $i"
                                 )
                             )
                         }
@@ -90,8 +88,13 @@ class SongsListReducer : BaseReducer<SongsListState, SongsListIntent, SongsListE
         }
 
         is SongsListIntent.StartPerformSearch -> {
-            if (intent.term.length < 3) {
-                // todo: rule will be on a real use case later
+            val shouldSearch = shouldShowSearchLoadingUseCase(
+                ShouldShowSearchLoadingUseCase.Request(
+                    intent.term
+                )
+            ).data == true
+
+            if (!shouldSearch) {
                 Reduction.none()
             } else {
                 Reduction(
@@ -101,9 +104,15 @@ class SongsListReducer : BaseReducer<SongsListState, SongsListIntent, SongsListE
             }
         }
 
-        SongsListIntent.TypingSearchTerm -> {
+        is SongsListIntent.TypingSearchTerm -> {
+            val shouldSearch = shouldShowSearchLoadingUseCase(
+                ShouldShowSearchLoadingUseCase.Request(
+                    intent.term
+                )
+            ).data == true
+
             Reduction.state(
-                TrackListLoading(search = true)
+                TrackListLoading(search = shouldSearch)
             )
         }
     }

@@ -20,6 +20,9 @@ splashScreen = "1.2.0"
 coil = "3.6.3"
 koin = "3.5.0"
 kotlinCollections = "0.5.2"
+retrofit = "3.0.0"
+secrets = "2.0.1"
+okhttp = "4.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,11 +56,13 @@ coil = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil"
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
-
-
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }

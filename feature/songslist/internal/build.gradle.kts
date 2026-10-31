@@ -52,4 +52,7 @@ dependencies {
 
     implementation(libs.koin)
     implementation(libs.koin.compose)
+
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.gson)
 }

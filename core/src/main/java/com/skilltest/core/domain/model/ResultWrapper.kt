@@ -28,3 +28,5 @@ sealed class ResultWrapper<T>(
         }
     }
 }
+
+fun <T> T.toSuccess(): ResultWrapper.Success<T> = ResultWrapper.Success(this)

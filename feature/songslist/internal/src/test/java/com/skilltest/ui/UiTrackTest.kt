@@ -16,7 +16,8 @@ class UiTrackTest {
             name = "test name",
             artistName = "artist",
             artworkUrl = "some_url",
-            isExplicit = true
+            isExplicit = true,
+            albumName = "album"
         )
 
         // when
@@ -28,7 +29,7 @@ class UiTrackTest {
             name = "test name",
             artistName = "artist",
             artwork = "some_url",
-            isExplicit = true
+            isExplicit = true,
         )
 
         assertEquals(expected, result)

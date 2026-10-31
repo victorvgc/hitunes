@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.roborazzi)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.secrets)
 }
 
 android {
@@ -26,7 +27,13 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "secrets.defaults.properties"
 }
 
 dependencies {
@@ -57,4 +64,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.timber)
+
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp.logging)
 }

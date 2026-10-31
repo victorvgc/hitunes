@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.secrets)
     kotlin("plugin.serialization") version "2.0.21"
 }
 
@@ -28,6 +29,8 @@ android {
         debug {
             isDebuggable = true
             isMinifyEnabled = false
+
+
         }
         release {
             isMinifyEnabled = true
@@ -47,6 +50,11 @@ android {
             isIncludeAndroidResources = true
         }
     }
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "secrets.defaults.properties"
 }
 
 dependencies {
@@ -69,10 +77,6 @@ dependencies {
     testImplementation(libs.roborazzi.junit)
     testImplementation(libs.junit)
 
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
@@ -84,6 +88,10 @@ dependencies {
 
     implementation(libs.koin)
     implementation(libs.koin.compose)
+
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp.logging)
 }
 
 private fun generateVersionCode() =

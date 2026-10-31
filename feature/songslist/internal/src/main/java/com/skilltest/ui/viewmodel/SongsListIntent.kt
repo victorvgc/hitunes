@@ -10,7 +10,7 @@ sealed class SongsListIntent(
     data object LoadingRecentlyPlayed : SongsListIntent(name = "LoadingRecentlyPlayed")
     data class PerformSearch(val term: String) : SongsListIntent(name = "LoadSearchResults")
     data class StartPerformSearch(val term: String) : SongsListIntent(name = "StartPerformSearch")
-    data object TypingSearchTerm : SongsListIntent(name = "TypingSearchTerm")
+    data class TypingSearchTerm(val term: String) : SongsListIntent(name = "TypingSearchTerm")
     data object SearchClick : SongsListIntent("SearchClick")
     data object ClearSearch : SongsListIntent("ClearSearch")
     data class OpenTrackMoreOptions(val trackId: String) :

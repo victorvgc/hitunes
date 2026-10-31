@@ -24,13 +24,13 @@ import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
 import kotlinx.coroutines.delay
 import timber.log.Timber
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun SearchField(
     searchTerm: String,
     onSearchTermChanged: (String) -> Unit,
-    onStartedTyping: () -> Unit,
+    onStartedTyping: (String) -> Unit,
     onSearchCleared: () -> Unit,
     modifier: Modifier = Modifier,
     placeholder: (@Composable () -> Unit)? = null,
@@ -41,7 +41,7 @@ fun SearchField(
     Timber.e("testing: $searchTerm -> $debounceTerm")
 
     LaunchedEffect(debounceTerm) {
-        delay(1000.milliseconds)
+        delay(1.seconds)
 
         onSearchTermChanged(debounceTerm)
     }
@@ -50,7 +50,8 @@ fun SearchField(
         modifier = modifier,
         value = debounceTerm,
         onValueChange = { input ->
-            onStartedTyping()
+            if (searchTerm.length > 2)
+                onStartedTyping(input)
             debounceTerm = input
         },
         maxLines = 1,
