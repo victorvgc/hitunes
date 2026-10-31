@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.material3)
 
     testImplementation(libs.roborazzi)
     testImplementation(libs.roborazzi.compose)
@@ -48,4 +49,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.coil)
+    implementation(libs.kotlin.collections)
+    implementation(libs.timber)
 }

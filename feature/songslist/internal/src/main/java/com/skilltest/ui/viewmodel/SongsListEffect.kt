@@ -7,4 +7,7 @@ sealed class SongsListEffect(
 ) : BaseUiEffect(name) {
     data class NavigateToTrackDetails(val id: String) :
         SongsListEffect(name = "NavigateToTrackDetails")
+
+    data class NavigateToTrackOptions(val id: String) :
+        SongsListEffect(name = "NavigateToTrackOptions")
 }

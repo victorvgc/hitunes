@@ -9,7 +9,8 @@ activityCompose = "1.8.0"
 kotlin = "2.4.21"
 composeBom = "2026.02.01"
 appcompat = "1.6.1"
-material = "1.10.0"
+material = "1.14.0"
+material3 = "1.5.0-beta02"
 timber = "5.0.1"
 roborazzi = "1.77.0"
 robolectric = "4.17"
@@ -17,6 +18,8 @@ navigation = "2.10.2"
 serialization = "1.12.0"
 splashScreen = "1.2.0"
 coil = "3.6.3"
+koin = "3.5.0"
+kotlinCollections = "0.5.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,7 +48,11 @@ roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", versi
 roborazzi-compose = { group = "io.github.takahirom.roborazzi", name = "roborazzi-compose", version.ref = "roborazzi" }
 roborazzi-junit = { group = "io.github.takahirom.roborazzi", name = "roborazzi-junit-rule", version.ref = "roborazzi" }
 serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+kotlin-collections = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinCollections" }
 coil = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

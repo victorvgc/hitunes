@@ -11,4 +11,6 @@ object Dimens {
 
     val size24 = 24.dp
     val size52 = 52.dp
+
+    val radius8 = 8.dp
 }

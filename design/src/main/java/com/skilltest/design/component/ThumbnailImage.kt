@@ -9,12 +9,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.painterResource
 import coil3.ColorImage
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import com.skilltest.core.utils.ComponentPreview
+import com.skilltest.design.R
 import com.skilltest.design.theme.HiTunesTheme
 
 @OptIn(ExperimentalCoilApi::class)
@@ -43,6 +45,7 @@ fun ThumbnailImage(
                     shape = shape
                 )
                 .clip(shape),
+            error = painterResource(R.drawable.ic_image_error),
             model = url,
             contentDescription = contentDescription,
         )

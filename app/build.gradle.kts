@@ -52,6 +52,7 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":design"))
+    implementation(project(":navigation"))
     implementation(project(":feature:songslist:shared"))
 
     implementation(platform(libs.androidx.compose.bom))
@@ -80,6 +81,9 @@ dependencies {
     implementation(libs.serialization)
 
     implementation(libs.androidx.splash)
+
+    implementation(libs.koin)
+    implementation(libs.koin.compose)
 }
 
 private fun generateVersionCode() =

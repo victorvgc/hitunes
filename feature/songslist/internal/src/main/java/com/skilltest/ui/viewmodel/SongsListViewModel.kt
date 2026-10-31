@@ -1,17 +1,25 @@
 package com.skilltest.ui.viewmodel
 
 import com.skilltest.core.presentation.viewmodel.BaseViewModel
-import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
-class SongsListViewModel : BaseViewModel<SongsListState, SongsListIntent, SongsListEffect>(
-    reducer = SongsListReducer()
+class SongsListViewModel(
+    songsListReducer: SongsListReducer
+) : BaseViewModel<SongsListState, SongsListIntent, SongsListEffect>(
+    initialState = SongsListState(),
+    reducer = songsListReducer
 ) {
-    override fun Flow<SongsListState>.handleAnalytics(
+    override suspend fun handleAnalytics(
         state: SongsListState,
-        intent: SongsListIntent
+        intent: SongsListIntent,
+        effect: SongsListEffect?
     ) {
-        Timber.d("handling interaction: ${state.name} + ${intent.name}")
-    }
+        var msg = "State: ${state.name} => Intent: ${intent.name}"
 
+        effect?.let {
+            msg += " created Effect: ${effect.name}"
+        }
+
+        Timber.d(msg)
+    }
 }

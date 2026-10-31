@@ -7,11 +7,14 @@ sealed class SongsListIntent(
 ) : BaseIntent(name) {
 
     data object LoadRecentlyPlayed : SongsListIntent(name = "LoadRecentlyPlayed")
-    data class LoadSearchResults(val term: String) : SongsListIntent(name = "LoadSearchResults")
+    data object LoadingRecentlyPlayed : SongsListIntent(name = "LoadingRecentlyPlayed")
+    data class PerformSearch(val term: String) : SongsListIntent(name = "LoadSearchResults")
+    data class StartPerformSearch(val term: String) : SongsListIntent(name = "StartPerformSearch")
+    data object TypingSearchTerm : SongsListIntent(name = "TypingSearchTerm")
     data object SearchClick : SongsListIntent("SearchClick")
     data object ClearSearch : SongsListIntent("ClearSearch")
-    data class OpenMoreOptionsForTrack(val trackId: String) :
+    data class OpenTrackMoreOptions(val trackId: String) :
         SongsListIntent("OpenMoreOptionsForTrack")
 
-    data class OpenDetailsForTrack(val trackId: String) : SongsListIntent("OpenDetailsForTrack")
+    data class OpenTrackDetails(val trackId: String) : SongsListIntent("OpenDetailsForTrack")
 }

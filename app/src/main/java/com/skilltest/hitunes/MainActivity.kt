@@ -7,9 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import com.skilltest.design.theme.HiTunesTheme
-import com.skilltest.hitunes.navigation.page.NavPage
+import com.skilltest.navigation.Route
 import com.skilltest.shared.ui.SongListPage
 
 class MainActivity : ComponentActivity() {
@@ -23,9 +24,12 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             HiTunesTheme {
-                NavHost(navController, startDestination = NavPage.SongsList) {
-                    composable<NavPage.SongsList> {
+                NavHost(navController, startDestination = Route.SongsList) {
+                    composable<Route.SongsList> {
                         SongListPage()
+                    }
+                    dialog<Route.SongOptions> {
+                        // todo: More options bottom sheet
                     }
                 }
             }

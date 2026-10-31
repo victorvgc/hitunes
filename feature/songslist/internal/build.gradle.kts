@@ -49,4 +49,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.timber)
+
+    implementation(libs.koin)
+    implementation(libs.koin.compose)
 }
