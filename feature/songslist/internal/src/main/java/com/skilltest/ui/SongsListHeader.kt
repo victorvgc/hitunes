@@ -26,13 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.skilltest.design.component.ActionButton
-import com.skilltest.design.component.ActionButtonDefaults
 import com.skilltest.design.component.SearchField
 import com.skilltest.design.theme.Dimens
+import com.skilltest.design.util.ComponentPreview
+import com.skilltest.design.util.PreviewBox
 import com.skilltest.ui.viewmodel.SongsListIntent
 import com.skilltest.ui.viewmodel.SongsListState
 import com.skilltest.design.R as designR
@@ -69,9 +69,6 @@ fun ColumnScope.SongsListHeader(
                     exit = fadeOut()
                 ) {
                     ActionButton(
-                        colors = ActionButtonDefaults.colors().copy(
-                            container = Color.Transparent
-                        ),
                         content = {
                             Icon(
                                 modifier = Modifier.sharedElement(
@@ -150,5 +147,15 @@ private val SearchBoundsTransform = BoundsTransform { initial, target ->
         initial at 0 using FastOutSlowInEasing
         corner at ICON_TRAVEL_MS / 2 using FastOutSlowInEasing
         target at ICON_TRAVEL_MS
+    }
+}
+
+@ComponentPreview
+@Composable
+private fun SongsListHeaderPreview() {
+    PreviewBox {
+        Column {
+            SongsListHeader(state = SongsListState(), onIntent = {})
+        }
     }
 }

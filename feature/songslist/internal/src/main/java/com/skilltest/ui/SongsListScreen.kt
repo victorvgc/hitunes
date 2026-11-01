@@ -14,6 +14,7 @@ import timber.log.Timber
 @Composable
 fun SongsListScreen(
     modifier: Modifier = Modifier,
+    onOpenTrackOptions: (trackId: String, albumId: String, trackName: String, artistId: String, artistName: String) -> Unit,
     viewModel: SongsListViewModel = koinViewModel()
 ) {
     val state = viewModel.state.collectAsState().value
@@ -24,7 +25,13 @@ fun SongsListScreen(
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collectLatest { effect ->
-            Timber.d("Effect received: ${effect.name}")
+            when (effect) {
+                is com.skilltest.ui.viewmodel.SongsListEffect.NavigateToTrackOptions -> {
+                    val track = effect.track
+                    onOpenTrackOptions(track.id, track.albumId, track.name, track.artistId, track.artistName)
+                }
+                else -> Timber.d("Effect received: ${effect.name}")
+            }
         }
     }
 

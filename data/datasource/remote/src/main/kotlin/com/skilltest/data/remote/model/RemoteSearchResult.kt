@@ -38,7 +38,9 @@ data class RemoteSearchResult(
                 artistName = artistName,
                 artworkUrl = artworkUrl100,
                 isExplicit = isExplicit,
-                albumName = if (isAlbumExplicit) collectionCensoredName else collectionName
+                albumName = if (isAlbumExplicit) collectionCensoredName else collectionName,
+                artistId = artistId.toString(),
+                albumId = collectionId.toString(),
             )
         }
     }

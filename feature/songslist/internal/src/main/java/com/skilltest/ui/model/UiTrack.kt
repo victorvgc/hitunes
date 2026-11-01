@@ -7,7 +7,9 @@ data class UiTrack(
     val name: String,
     val artistName: String,
     val artwork: String,
-    val isExplicit: Boolean
+    val isExplicit: Boolean,
+    val artistId: String = "",
+    val albumId: String = "",
 ) {
     companion object {
         fun Track.toUi(): UiTrack = UiTrack(
@@ -15,7 +17,9 @@ data class UiTrack(
             name = name,
             artistName = artistName,
             artwork = artworkUrl,
-            isExplicit = isExplicit
+            isExplicit = isExplicit,
+            artistId = artistId,
+            albumId = albumId,
         )
     }
 }

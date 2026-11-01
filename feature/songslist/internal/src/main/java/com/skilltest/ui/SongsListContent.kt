@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.skilltest.core.util.ScreenPreview
+import com.skilltest.design.util.ScreenPreview
 import com.skilltest.design.theme.Dimens
-import com.skilltest.design.theme.HiTunesTheme
+import com.skilltest.design.util.PreviewBox
 import com.skilltest.ui.model.UiTrack
 import com.skilltest.ui.viewmodel.SongsListIntent
 import com.skilltest.ui.viewmodel.SongsListState
@@ -73,7 +73,7 @@ private fun SongsListContentPreview(
     @PreviewParameter(SongsListContentParamProvider::class)
     state: SongsListState,
 ) {
-    HiTunesTheme() {
+    PreviewBox {
         SongsListContent(state, onIntent = {})
     }
 }

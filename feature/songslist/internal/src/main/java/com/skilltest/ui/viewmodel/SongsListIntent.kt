@@ -1,9 +1,10 @@
 package com.skilltest.ui.viewmodel
 
 import com.skilltest.core.presentation.viewmodel.BaseIntent
+import com.skilltest.ui.model.UiTrack
 
 sealed class SongsListIntent(
-    override val name: String,
+    name: String,
 ) : BaseIntent(name) {
 
     data object LoadRecentlyPlayed : SongsListIntent(name = "LoadRecentlyPlayed")
@@ -13,7 +14,7 @@ sealed class SongsListIntent(
     data class TypingSearchTerm(val term: String) : SongsListIntent(name = "TypingSearchTerm")
     data object SearchClick : SongsListIntent("SearchClick")
     data object ClearSearch : SongsListIntent("ClearSearch")
-    data class OpenTrackMoreOptions(val trackId: String) :
+    data class OpenTrackMoreOptions(val track: UiTrack) :
         SongsListIntent("OpenMoreOptionsForTrack")
 
     data class OpenTrackDetails(val trackId: String) : SongsListIntent("OpenDetailsForTrack")

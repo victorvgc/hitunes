@@ -2,10 +2,10 @@ package com.skilltest.domain.usecase
 
 import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
-import com.skilltest.domain.repository.SongsListRepository
+import com.skilltest.domain.repository.SongRepository
 
 class SearchSongsByTermUseCase(
-    private val repository: SongsListRepository,
+    private val repository: SongRepository,
 ) : BaseUseCase<SearchSongsByTermUseCase.Request, SearchResult> {
 
     override suspend fun invoke(request: Request): ResultWrapper<SearchResult> =

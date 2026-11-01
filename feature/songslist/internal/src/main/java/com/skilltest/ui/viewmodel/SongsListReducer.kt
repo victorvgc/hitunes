@@ -55,7 +55,7 @@ class SongsListReducer(
         }
 
         is SongsListIntent.OpenTrackMoreOptions -> {
-            Reduction.effect(NavigateToTrackOptions(intent.trackId))
+            Reduction.effect(NavigateToTrackOptions(intent.track))
         }
 
         SongsListIntent.SearchClick -> {
@@ -78,7 +78,9 @@ class SongsListReducer(
                                     artistName = "Artist $i",
                                     artworkUrl = "https://www.diamondpet.com/wp-content/uploads/2021/03/kitten-sitting-on-floor-031621.jpg",
                                     isExplicit = i % 2 == 0,
-                                    albumName = "Album $i"
+                                    albumName = "Album $i",
+                                    albumId = "album-$i",
+                                    artistId = "artist-$i",
                                 )
                             )
                         }

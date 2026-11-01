@@ -9,7 +9,7 @@ import com.skilltest.ui.model.UiTrack.Companion.toUi
 
 @Immutable
 data class SongsListState(
-    override val name: String = "SongsListState",
+    val stateName: String = "SongsListState",
     val isLoading: Boolean = false,
     val isLoadingSearch: Boolean = false,
     val isLoadingRecentlyPlayed: Boolean = false,
@@ -18,7 +18,7 @@ data class SongsListState(
     val recentlyPlayed: List<UiTrack> = emptyList(),
     val isError: Boolean = false,
     val isSearching: Boolean = false,
-) : BaseUiState(name)
+) : BaseUiState(stateName)
 
 internal sealed interface SongsListStateChange : PartialStateChange<SongsListState> {
     data object SearchCleared : SongsListStateChange {

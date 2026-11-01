@@ -8,18 +8,4 @@ class SongsListViewModel(
 ) : BaseViewModel<SongsListState, SongsListIntent, SongsListEffect>(
     initialState = SongsListState(),
     reducer = songsListReducer
-) {
-    override suspend fun handleAnalytics(
-        state: SongsListState,
-        intent: SongsListIntent,
-        effect: SongsListEffect?
-    ) {
-        var msg = "State: ${state.name} => Intent: ${intent.name}"
-
-        effect?.let {
-            msg += " created Effect: ${effect.name}"
-        }
-
-        Timber.d(msg)
-    }
-}
+)

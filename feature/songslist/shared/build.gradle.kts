@@ -9,6 +9,5 @@ android {
 dependencies {
     implementation(project(":feature:songslist:internal"))
 
-    implementation(libs.koin)
-    implementation(libs.koin.compose)
+    implementation(libs.koin.core)
 }

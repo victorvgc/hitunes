@@ -12,7 +12,13 @@ sealed interface Route {
     data object SongDetails : Route
 
     @Serializable
-    data object Album : Route
+    data class Album(
+        val albumId: String,
+        val trackId: String,
+        val trackName: String,
+        val artistId: String,
+        val artistName: String,
+    ) : Route
 
     @Serializable
     data object SongOptions : Route

@@ -1,12 +1,13 @@
 plugins {
-    id("android-library-convention")
+    id("android-library-compose-convention")
 }
 
 android {
-    namespace = "com.skilltest.shared"
+    namespace = "com.skilltest.songextras.shared"
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(project(":feature:songextras:internal"))
+    implementation(project(":core:presentation"))
+    implementation(libs.koin.core)
 }

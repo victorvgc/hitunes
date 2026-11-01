@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
@@ -17,11 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.skilltest.design.component.ActionButton
 import com.skilltest.design.component.ActionButtonDefaults
 import com.skilltest.design.component.SkeletonBox
 import com.skilltest.design.component.ThumbnailImage
 import com.skilltest.design.theme.Dimens
+import com.skilltest.design.util.ComponentPreview
+import com.skilltest.design.util.PreviewBox
 import com.skilltest.ui.model.UiTrack
 import com.skilltest.design.R as designR
 
@@ -34,7 +38,7 @@ internal fun SongListComponent(
     recentlyPlayed: List<UiTrack>,
     searchResults: List<UiTrack>,
     onTrackClick: (String) -> Unit,
-    onTrackMoreActionsClick: (String) -> Unit,
+    onTrackMoreActionsClick: (UiTrack) -> Unit,
 ) {
     val trackList = if (isSearching) {
         searchResults
@@ -62,7 +66,7 @@ internal fun SongListComponent(
                         onTrackClick(track.id)
                     },
                     onMoreClick = {
-                        onTrackMoreActionsClick(track.id)
+                        onTrackMoreActionsClick(track)
                     }
                 )
             }
@@ -118,6 +122,31 @@ private fun TrackItem(
                 )
             },
             onClick = onMoreClick
+        )
+    }
+}
+
+@ComponentPreview
+@Composable
+private fun SongListComponentPreview() {
+    PreviewBox(modifier = Modifier.width(320.dp).height(80.dp)) {
+        SongListComponent(
+            isSearching = false,
+            isLoading = false,
+            recentlyPlayed = listOf(
+                UiTrack(
+                    id = "track-1",
+                    name = "Thriller",
+                    artistName = "Michael Jackson",
+                    artwork = "",
+                    isExplicit = false,
+                    artistId = "artist-3",
+                    albumId = "album-2",
+                )
+            ),
+            searchResults = emptyList(),
+            onTrackClick = {},
+            onTrackMoreActionsClick = {},
         )
     }
 }

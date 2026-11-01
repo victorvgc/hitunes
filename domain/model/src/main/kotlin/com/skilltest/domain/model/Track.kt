@@ -7,4 +7,6 @@ data class Track(
     val albumName: String,
     val artworkUrl: String,
     val isExplicit: Boolean,
+    val artistId: String = "",
+    val albumId: String = "",
 )
