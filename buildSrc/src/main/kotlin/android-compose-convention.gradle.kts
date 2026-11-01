@@ -27,6 +27,9 @@ dependencies {
     add("implementation", versionCatalog.findLibrary("androidx-lifecycle-compose-ktx").get())
 
     add("testImplementation", versionCatalog.findBundle("roborazzi").get())
+    add("testImplementation", versionCatalog.findLibrary("robolectric").get())
+    add("testImplementation", platform(versionCatalog.findLibrary("androidx-compose-bom").get()))
+    add("testImplementation", versionCatalog.findLibrary("androidx-compose-ui-test-junit4").get())
     add(
         "androidTestImplementation",
         versionCatalog.findLibrary("androidx-compose-ui-test-junit4").get()
