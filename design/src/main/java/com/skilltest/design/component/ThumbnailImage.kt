@@ -18,6 +18,7 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import com.skilltest.core.utils.ComponentPreview
 import com.skilltest.design.R
 import com.skilltest.design.theme.HiTunesTheme
+import timber.log.Timber
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -46,6 +47,9 @@ fun ThumbnailImage(
                 )
                 .clip(shape),
             error = painterResource(R.drawable.ic_image_error),
+            onError = { error ->
+                Timber.e(error.result.throwable)
+            },
             model = url,
             contentDescription = contentDescription,
         )

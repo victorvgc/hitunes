@@ -49,6 +49,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.coil)
+    implementation(libs.coil.okhttp)
     implementation(libs.kotlin.collections)
     implementation(libs.timber)
 }
