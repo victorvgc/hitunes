@@ -2,8 +2,8 @@ package com.skilltest.core.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.skilltest.core.util.DefaultDispatcherProvider
-import com.skilltest.core.util.DispatcherProvider
+import com.skilltest.core.presentation.util.DefaultDispatcherProvider
+import com.skilltest.core.presentation.util.DispatcherProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
+import timber.log.Timber
 
 abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: BaseUiEffect>(
     initialState: State,
@@ -101,9 +102,17 @@ abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: Bas
         handleAnalytics(state, originatingIntent, effect)
     }
 
-    protected abstract suspend fun handleAnalytics(
+    protected open suspend fun handleAnalytics(
         state: State,
         intent: Intent,
         effect: Effect? = null
-    )
+    ) {
+        var msg = "State: ${state.name} => Intent: ${intent.name}"
+
+        effect?.let {
+            msg += " created Effect: ${effect.name}"
+        }
+
+        Timber.d(msg)
+    }
 }

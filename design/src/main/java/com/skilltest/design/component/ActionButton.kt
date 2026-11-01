@@ -1,6 +1,5 @@
 package com.skilltest.design.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Icon
@@ -13,9 +12,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
-import com.skilltest.core.util.ComponentPreview
+import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.R
-import com.skilltest.design.theme.HiTunesTheme
+import com.skilltest.design.util.PreviewBox
 
 @Composable
 fun ActionButton(
@@ -27,10 +26,6 @@ fun ActionButton(
 ) {
     Box(
         modifier = modifier
-            .background(
-                color = colors.container,
-                shape = shape,
-            )
             .clip(shape)
             .clickable {
                 onClick()
@@ -47,7 +42,7 @@ fun ActionButton(
 @ComponentPreview
 @Composable
 private fun ActionButtonPreview() {
-    HiTunesTheme {
+    PreviewBox {
         ActionButton(
             content = {
                 Icon(
@@ -64,7 +59,6 @@ object ActionButtonDefaults {
     @Composable
     fun colors() = ActionButtonColors(
         content = MaterialTheme.colorScheme.onBackground,
-        container = MaterialTheme.colorScheme.background
     )
 
     @Composable
@@ -73,5 +67,4 @@ object ActionButtonDefaults {
 
 data class ActionButtonColors(
     val content: Color,
-    val container: Color,
 )

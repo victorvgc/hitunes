@@ -1,4 +1,4 @@
-package com.skilltest.core.util
+package com.skilltest.core.presentation.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

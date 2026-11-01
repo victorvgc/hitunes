@@ -26,7 +26,6 @@ rootProject.name = "HiTunes"
 include(":app")
 include(":core")
 include(":core:presentation")
-include(":core:util")
 include(":feature:songslist")
 include(":feature:songslist:shared")
 include(":feature:songslist:internal")

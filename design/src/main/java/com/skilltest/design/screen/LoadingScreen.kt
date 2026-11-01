@@ -1,16 +1,14 @@
 package com.skilltest.design.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.skilltest.core.util.ScreenPreview
-import com.skilltest.design.theme.HiTunesTheme
+import com.skilltest.design.util.ScreenPreview
+import com.skilltest.design.util.PreviewBox
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -20,10 +18,7 @@ fun LoadingScreen(
 ) {
     Box(
         modifier = modifier
-            .fillMaxSize()
-            .background(
-                color = MaterialTheme.colorScheme.background
-            ),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         if (progress != null) {
@@ -41,7 +36,7 @@ fun LoadingScreen(
 @ScreenPreview
 @Composable
 private fun LoadingScreenPreview() {
-    HiTunesTheme {
+    PreviewBox {
         LoadingScreen()
     }
 }

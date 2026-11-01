@@ -7,7 +7,5 @@ android {
 }
 
 dependencies {
-    // BaseViewModel exposes DispatcherProvider and ViewModel in its public API.
-    api(project(":core:util"))
     api(libs.androidx.lifecycle.viewmodel.ktx)
 }

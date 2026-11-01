@@ -18,10 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.skilltest.core.util.ComponentPreview
+import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.R
 import com.skilltest.design.theme.Dimens
-import com.skilltest.design.theme.HiTunesTheme
+import com.skilltest.design.util.PreviewBox
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
@@ -111,7 +111,7 @@ private fun SearchFieldPreview(
     @PreviewParameter(SearchPreviewParams::class)
     search: String,
 ) {
-    HiTunesTheme {
+    PreviewBox {
         SearchField(
             searchTerm = search,
             onSearchCleared = {},

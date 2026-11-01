@@ -1,5 +1,10 @@
 plugins {
     id("android-library-compose-convention")
+    alias(libs.plugins.android.roborazzi)
+}
+
+roborazzi {
+    outputDir.set(file("src/test/snapshots"))
 }
 
 android {
@@ -7,8 +12,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:util"))
-
     implementation(libs.material3)
 
     implementation(libs.coil)

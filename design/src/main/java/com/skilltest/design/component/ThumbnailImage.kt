@@ -1,6 +1,5 @@
 package com.skilltest.design.component
 
-import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -15,9 +14,9 @@ import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
-import com.skilltest.core.util.ComponentPreview
+import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.R
-import com.skilltest.design.theme.HiTunesTheme
+import com.skilltest.design.util.PreviewBox
 import timber.log.Timber
 
 @OptIn(ExperimentalCoilApi::class)
@@ -41,10 +40,6 @@ fun ThumbnailImage(
     ) {
         AsyncImage(
             modifier = modifier
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = shape
-                )
                 .clip(shape),
             error = painterResource(R.drawable.ic_image_error),
             onError = { error ->
@@ -59,7 +54,7 @@ fun ThumbnailImage(
 @ComponentPreview
 @Composable
 private fun ThumbnailImagePreview() {
-    HiTunesTheme() {
+    PreviewBox {
         ThumbnailImage(
             url = "",
             contentDescription = null

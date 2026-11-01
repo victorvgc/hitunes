@@ -20,9 +20,9 @@ import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import com.skilltest.core.util.ComponentPreview
+import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.theme.Dimens
-import com.skilltest.design.theme.HiTunesTheme
+import com.skilltest.design.util.PreviewBox
 import kotlinx.collections.immutable.persistentListOf
 
 private const val TRANSITION_LABEL = "Skeleton Loading Transition"
@@ -88,7 +88,7 @@ private fun Modifier.shimmerLoading(
 @ComponentPreview
 @Composable
 private fun SkeletonBoxPreview() {
-    HiTunesTheme {
+    PreviewBox {
         SkeletonBox(
             modifier = Modifier.size(Dimens.size52)
         )
