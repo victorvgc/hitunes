@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.skilltest.core.utils.ComponentPreview
+import com.skilltest.core.util.ComponentPreview
 import com.skilltest.design.R
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme

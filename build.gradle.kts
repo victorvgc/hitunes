@@ -7,4 +7,5 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.android.roborazzi) apply false
     alias(libs.plugins.secrets) apply false
+    id("org.jetbrains.kotlin.jvm") apply false
 }

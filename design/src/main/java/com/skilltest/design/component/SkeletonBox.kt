@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import com.skilltest.core.utils.ComponentPreview
+import com.skilltest.core.util.ComponentPreview
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
 import kotlinx.collections.immutable.persistentListOf

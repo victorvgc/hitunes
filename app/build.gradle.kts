@@ -52,10 +52,12 @@ secrets {
 }
 
 dependencies {
-    implementation(project(":core"))
     implementation(project(":design"))
     implementation(project(":navigation"))
     implementation(project(":feature:songslist:shared"))
+    implementation(project(":data:datasource:remote"))
+    implementation(project(":data:datasource:local"))
+    implementation(project(":data:repository"))
 
     implementation(libs.androidx.compose.nav)
     implementation(libs.serialization)
@@ -66,6 +68,5 @@ dependencies {
     implementation(libs.koin.compose)
 
     implementation(libs.retrofit.core)
-    implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
 }

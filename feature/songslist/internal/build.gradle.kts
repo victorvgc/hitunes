@@ -7,12 +7,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":core:presentation"))
+    implementation(project(":core:util"))
     implementation(project(":design"))
+    implementation(project(":domain:model"))
+    implementation(project(":domain:usecase"))
 
     implementation(libs.koin)
     implementation(libs.koin.compose)
-
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.gson)
 }

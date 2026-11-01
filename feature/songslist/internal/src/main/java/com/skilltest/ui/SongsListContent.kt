@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.skilltest.core.utils.ScreenPreview
+import com.skilltest.core.util.ScreenPreview
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
 import com.skilltest.ui.model.UiTrack

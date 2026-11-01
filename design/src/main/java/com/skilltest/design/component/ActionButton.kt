@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
-import com.skilltest.core.utils.ComponentPreview
+import com.skilltest.core.util.ComponentPreview
 import com.skilltest.design.R
 import com.skilltest.design.theme.HiTunesTheme
 

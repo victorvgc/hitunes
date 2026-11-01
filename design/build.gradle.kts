@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":core:util"))
 
     implementation(libs.material3)
 

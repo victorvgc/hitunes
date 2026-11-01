@@ -15,7 +15,7 @@ import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
-import com.skilltest.core.utils.ComponentPreview
+import com.skilltest.core.util.ComponentPreview
 import com.skilltest.design.R
 import com.skilltest.design.theme.HiTunesTheme
 import timber.log.Timber
