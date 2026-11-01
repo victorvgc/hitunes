@@ -6,6 +6,7 @@ dependencies {
     add("implementation", versionCatalog.findLibrary("timber").get())
 
     add("testImplementation", versionCatalog.findLibrary("junit").get())
+    add("testImplementation", versionCatalog.findLibrary("kotlinx-coroutines-test").get())
     add("androidTestImplementation", versionCatalog.findLibrary("androidx-junit").get())
     add("androidTestImplementation", versionCatalog.findLibrary("androidx-espresso-core").get())
 }

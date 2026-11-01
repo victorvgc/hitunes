@@ -18,6 +18,7 @@ kotlin {
 
 dependencies {
     testImplementation(versionCatalog.findLibrary("junit").get())
+    testImplementation(versionCatalog.findLibrary("kotlinx-coroutines-test").get())
 }
 
 tasks.withType<Test>().configureEach {

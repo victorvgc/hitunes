@@ -1,6 +1,6 @@
 package com.skilltest.hitunes
 
-import com.skilltest.domain.repository.SongsListRepository
+import com.skilltest.domain.repository.SongRepository
 import com.skilltest.hitunes.di.mainModule
 import com.skilltest.shared.di.songsListModule
 import org.junit.Assert.assertNotNull
@@ -27,7 +27,7 @@ class DependencyGraphTest {
         }
 
         try {
-            assertNotNull(application.koin.get<SongsListRepository>())
+            assertNotNull(application.koin.get<SongRepository>())
         } finally {
             application.close()
         }
