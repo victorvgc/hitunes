@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":navigation"))
     implementation(project(":feature:songslist:shared"))
     implementation(project(":feature:songextras:shared"))
+    implementation(project(":feature:songplayer:shared"))
     implementation(project(":data:datasource:remote"))
     implementation(project(":data:datasource:local"))
     implementation(project(":data:repository"))
