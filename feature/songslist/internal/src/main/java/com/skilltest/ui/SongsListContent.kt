@@ -25,6 +25,8 @@ fun SongsListContent(
     onIntent: (SongsListIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val showRecentlyPlayed = !state.isSearching || state.searchTerm.isEmpty()
+
     Scaffold { innerPadding ->
         Column(
             modifier = modifier
@@ -40,9 +42,7 @@ fun SongsListContent(
                 onIntent = onIntent
             )
 
-            if ((state.isSearching.not() || state.searchTerm.isEmpty()) &&
-                (state.recentlyPlayed.isNotEmpty() || state.isLoadingRecentlyPlayed) || state.isLoadingSearch.not()
-            ) {
+            if (showRecentlyPlayed) {
                 Text(
                     text = stringResource(R.string.recently_played),
                     style = MaterialTheme.typography.labelMedium.copy(
@@ -52,10 +52,10 @@ fun SongsListContent(
             }
 
             SongListComponent(
-                isSearching = state.isSearching && state.searchTerm.isNotEmpty(),
-                isLoading = state.isLoadingRecentlyPlayed || state.isLoadingSearch,
+                isSearching = !showRecentlyPlayed,
+                isLoading = if (showRecentlyPlayed) state.isLoadingRecentlyPlayed else state.isLoadingSearch,
                 recentlyPlayed = state.recentlyPlayed,
-                searchResults = state.searchResult,
+                searchResults = if (state.searchTerm.length >= 3) state.searchResult else emptyList(),
                 onTrackClick = {
                     onIntent(SongsListIntent.OpenTrackDetails(it))
                 },

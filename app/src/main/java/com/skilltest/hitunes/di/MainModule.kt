@@ -3,16 +3,17 @@ package com.skilltest.hitunes.di
 import com.skilltest.data.local.di.localDataSourceModule
 import com.skilltest.data.remote.di.remoteDataSourceModule
 import com.skilltest.data.remote.provideRetrofitWithCache
-import com.skilltest.data.repository.di.repositoryModule
+import com.skilltest.data.di.repositoryModule
+import com.skilltest.domain.usecase.di.useCaseModule
 import com.skilltest.hitunes.BuildConfig
+import com.skilltest.shared.di.albumModule
+import com.skilltest.shared.di.songsListModule
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import java.util.concurrent.TimeUnit
 
 val mainModule = module {
-    includes(remoteDataSourceModule, localDataSourceModule, repositoryModule)
-
     single {
         HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
@@ -35,3 +36,13 @@ val mainModule = module {
         provideRetrofitWithCache(get(), get())
     }
 }
+
+val appModules = listOf(
+    mainModule,
+    remoteDataSourceModule,
+    localDataSourceModule,
+    repositoryModule,
+    useCaseModule,
+    songsListModule,
+    albumModule,
+)

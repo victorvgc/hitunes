@@ -7,5 +7,6 @@ class SongsListViewModel(
     songsListReducer: SongsListReducer
 ) : BaseViewModel<SongsListState, SongsListIntent, SongsListEffect>(
     initialState = SongsListState(),
-    reducer = songsListReducer
+    reducer = songsListReducer,
+    initialIntent = SongsListIntent.LoadRecentlyPlayed,
 )

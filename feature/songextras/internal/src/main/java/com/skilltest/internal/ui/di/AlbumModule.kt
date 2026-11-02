@@ -6,6 +6,10 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val albumModule = module {
-    factory { AlbumReducer() }
+    factory {
+        AlbumReducer(
+            get()
+        )
+    }
     viewModel { AlbumViewModel(get()) }
 }

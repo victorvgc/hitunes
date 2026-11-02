@@ -1,0 +1,9 @@
+com.skilltest.core.util-pngs-0 /Users/carvalho/Documents/studies/HiTunes/core/util/build/generated/res/pngs/debug
+com.skilltest.core.util-updated_navigation_xml-1 /Users/carvalho/Documents/studies/HiTunes/core/util/build/generated/updated_navigation_xml/debug
+com.skilltest.core.util-mergeDebugResources-2 /Users/carvalho/Documents/studies/HiTunes/core/util/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.skilltest.core.util-mergeDebugResources-3 /Users/carvalho/Documents/studies/HiTunes/core/util/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.skilltest.core.util-debug-4 /Users/carvalho/Documents/studies/HiTunes/core/util/build/intermediates/merged_res/debug/mergeDebugResources
+com.skilltest.core.util-debug-5 /Users/carvalho/Documents/studies/HiTunes/core/util/build/intermediates/packaged_res/debug/packageDebugResources
+com.skilltest.core.util-debug-6 /Users/carvalho/Documents/studies/HiTunes/core/util/src/debug/res
+com.skilltest.core.util-main-7 /Users/carvalho/Documents/studies/HiTunes/core/util/src/main/res
+gradleHome-0 /Users/carvalho/.gradle

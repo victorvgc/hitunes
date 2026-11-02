@@ -1,9 +1,7 @@
 package com.skilltest.hitunes
 
 import android.app.Application
-import com.skilltest.hitunes.di.mainModule
-import com.skilltest.shared.di.songsListModule
-import com.skilltest.shared.di.albumModule
+import com.skilltest.hitunes.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -23,11 +21,7 @@ class HiTunesApp: Application() {
 
             androidContext(this@HiTunesApp)
 
-            modules(
-                mainModule,
-                songsListModule,
-                albumModule,
-            )
+            modules(appModules)
         }
     }
 }

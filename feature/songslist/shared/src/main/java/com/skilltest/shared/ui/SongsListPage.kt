@@ -1,11 +1,12 @@
 package com.skilltest.shared.ui
 
 import androidx.compose.runtime.Composable
+import com.skilltest.navigation.Route
 import com.skilltest.ui.SongsListScreen
 
 @Composable
 fun SongListPage(
-    onOpenTrackOptions: (trackId: String, albumId: String, trackName: String, artistId: String, artistName: String) -> Unit,
+    navigateToPage: (Route) -> Unit,
 ) {
-    SongsListScreen(onOpenTrackOptions = onOpenTrackOptions)
+    SongsListScreen(navigateToPage = navigateToPage)
 }

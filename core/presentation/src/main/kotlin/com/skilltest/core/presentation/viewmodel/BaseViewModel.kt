@@ -21,6 +21,7 @@ abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: Bas
     initialState: State,
     private val reducer: BaseReducer<State, Intent, Effect>,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    initialIntent: Intent? = null,
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow<State>(initialState)
@@ -53,6 +54,7 @@ abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: Bas
                 }
             }
         }
+        initialIntent?.let(::onIntent)
     }
 
     fun onIntent(intent: Intent) {

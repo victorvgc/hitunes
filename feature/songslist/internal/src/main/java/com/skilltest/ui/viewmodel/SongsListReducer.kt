@@ -11,6 +11,7 @@ import com.skilltest.ui.viewmodel.SongsListIntent.PerformSearch
 import com.skilltest.ui.viewmodel.SongsListStateChange.LoadedRecentlyPlayed
 import com.skilltest.ui.viewmodel.SongsListStateChange.LoadedSearchResults
 import com.skilltest.ui.viewmodel.SongsListStateChange.SearchCleared
+import com.skilltest.ui.viewmodel.SongsListStateChange.SearchTermChanged
 import com.skilltest.ui.viewmodel.SongsListStateChange.StartSearching
 import com.skilltest.ui.viewmodel.SongsListStateChange.TrackListLoading
 import kotlinx.coroutines.delay
@@ -92,11 +93,13 @@ class SongsListReducer(
         is SongsListIntent.StartPerformSearch -> {
             val shouldSearch = shouldShowSearchLoadingUseCase(
                 ShouldShowSearchLoadingUseCase.Request(
-                    intent.term
+                    intent.term,
+                    previousTerm = previousState.searchTerm,
+                    previousSearched = previousState.lastSearchedTerm,
                 )
             ).data == true
 
-            if (!shouldSearch) {
+            if (shouldSearch) {
                 Reduction.none()
             } else {
                 Reduction(
@@ -107,15 +110,7 @@ class SongsListReducer(
         }
 
         is SongsListIntent.TypingSearchTerm -> {
-            val shouldSearch = shouldShowSearchLoadingUseCase(
-                ShouldShowSearchLoadingUseCase.Request(
-                    intent.term
-                )
-            ).data == true
-
-            Reduction.state(
-                TrackListLoading(search = shouldSearch)
-            )
+            Reduction.state(SearchTermChanged(intent.term))
         }
     }
 }

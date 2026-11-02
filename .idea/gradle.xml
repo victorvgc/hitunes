@@ -24,7 +24,6 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/presentation" />
-            <option value="$PROJECT_DIR$/core/util" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data/datasource" />
             <option value="$PROJECT_DIR$/data/datasource/local" />

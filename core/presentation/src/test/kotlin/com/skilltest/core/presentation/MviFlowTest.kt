@@ -57,6 +57,28 @@ class MviFlowTest {
         assertTrue(previous === unchanged)
     }
 
+    @Test
+    fun initialIntentRunsOnceForTheViewModelLifetime() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        Dispatchers.setMain(dispatcher)
+        try {
+            val viewModel = TestViewModel(
+                TestReducer(),
+                TestDispatchers(dispatcher),
+                initialIntent = TestIntent.Start,
+            )
+
+            advanceUntilIdle()
+            assertEquals(2, viewModel.state.value.count)
+
+            // A screen can leave and re-enter composition while retaining this ViewModel.
+            advanceUntilIdle()
+            assertEquals(2, viewModel.state.value.count)
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
     private data class TestState(val count: Int = 0) : BaseUiState("TestState")
     private sealed class TestIntent(name: String) : BaseIntent(name) {
         data object Start : TestIntent("Start")
@@ -82,8 +104,16 @@ class MviFlowTest {
         }
     }
 
-    private class TestViewModel(reducer: TestReducer, dispatchers: DispatcherProvider) :
-        BaseViewModel<TestState, TestIntent, TestEffect>(TestState(), reducer, dispatchers)
+    private class TestViewModel(
+        reducer: TestReducer,
+        dispatchers: DispatcherProvider,
+        initialIntent: TestIntent? = null,
+    ) : BaseViewModel<TestState, TestIntent, TestEffect>(
+        initialState = TestState(),
+        reducer = reducer,
+        dispatcherProvider = dispatchers,
+        initialIntent = initialIntent,
+    )
 
     private class TestDispatchers(private val dispatcher: CoroutineDispatcher) : DispatcherProvider {
         override val main = dispatcher

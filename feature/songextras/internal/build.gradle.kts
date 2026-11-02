@@ -14,6 +14,7 @@ android {
 dependencies {
     implementation(project(":design"))
     implementation(project(":domain:model"))
+    implementation(project(":domain:usecase"))
     implementation(project(":core:presentation"))
     implementation(libs.koin)
     implementation(libs.koin.compose)

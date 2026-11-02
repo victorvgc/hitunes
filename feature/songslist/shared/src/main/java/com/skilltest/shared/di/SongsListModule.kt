@@ -1,5 +1,5 @@
 package com.skilltest.shared.di
 
-import com.skilltest.di.internalSongsListModule
+import com.skilltest.ui.di.internalSongsListModule
 
 val songsListModule = internalSongsListModule

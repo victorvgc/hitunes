@@ -8,6 +8,7 @@ android {
 
 dependencies {
     implementation(project(":feature:songslist:internal"))
+    implementation(project(":navigation"))
 
     implementation(libs.koin.core)
 }

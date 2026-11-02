@@ -15,6 +15,7 @@ data class SongsListState(
     val isLoadingRecentlyPlayed: Boolean = false,
     val searchResult: List<UiTrack> = emptyList(),
     val searchTerm: String = "",
+    val lastSearchedTerm: String? = null,
     val recentlyPlayed: List<UiTrack> = emptyList(),
     val isError: Boolean = false,
     val isSearching: Boolean = false,
@@ -24,6 +25,7 @@ internal sealed interface SongsListStateChange : PartialStateChange<SongsListSta
     data object SearchCleared : SongsListStateChange {
         override fun reduce(previous: SongsListState): SongsListState = previous.copy(
             searchTerm = "",
+            lastSearchedTerm = null,
             isLoadingSearch = false,
             searchResult = emptyList()
         )
@@ -48,10 +50,20 @@ internal sealed interface SongsListStateChange : PartialStateChange<SongsListSta
         val term: String,
         val results: List<Track>
     ) : SongsListStateChange {
+        override fun reduce(previous: SongsListState): SongsListState =
+            if (previous.searchTerm != term) previous else previous.copy(
+                searchResult = results.map { it.toUi() },
+                isLoadingSearch = false,
+                lastSearchedTerm = term,
+            )
+    }
+
+    data class SearchTermChanged(val term: String) : SongsListStateChange {
         override fun reduce(previous: SongsListState): SongsListState = previous.copy(
-            searchResult = results.map { it.toUi() },
+            searchTerm = term,
+            lastSearchedTerm = null,
+            searchResult = emptyList(),
             isLoadingSearch = false,
-            searchTerm = term
         )
     }
 

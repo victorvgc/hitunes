@@ -12,4 +12,8 @@ sealed class AlbumComponentEffect(
         val artistId: String,
         val artistName: String,
     ) : AlbumComponentEffect("NavigateToAlbumDetails")
+
+    data class NavigateToSongDetails(
+        val trackId: String,
+    ) : AlbumComponentEffect("NavigateToSongDetails")
 }

@@ -4,10 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,53 +33,24 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             HiTunesTheme {
-                var selectedAlbum by remember { mutableStateOf<Route.Album?>(null) }
-
-                NavHost(navController, startDestination = Route.SongsList) {
-                    composable<Route.SongsList> {
-                        SongListPage { trackId, albumId, trackName, artistId, artistName ->
-                            selectedAlbum = Route.Album(
-                                albumId = albumId,
-                                trackId = trackId,
-                                trackName = trackName,
-                                artistId = artistId,
-                                artistName = artistName,
+                Scaffold() { innerPadding ->
+                    NavHost(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController,
+                        startDestination = Route.SongsList
+                    ) {
+                        composable<Route.SongsList> {
+                            SongListPage { route ->
+                                navController.navigate(route)
+                            }
+                        }
+                        composable<Route.Album> { entry ->
+                            val album = entry.toRoute<Route.Album>()
+                            AlbumDetailsPage(
+                                albumId = album.albumId,
                             )
                         }
                     }
-                    composable<Route.Album> { entry ->
-                        val album = entry.toRoute<Route.Album>()
-                        AlbumDetailsPage(
-                            albumId = album.albumId,
-                            trackId = album.trackId,
-                            trackName = album.trackName,
-                            artistId = album.artistId,
-                            artistName = album.artistName,
-                        )
-                    }
-                }
-
-                selectedAlbum?.let { album ->
-                    AlbumSheetPage(
-                        trackId = album.trackId,
-                        albumId = album.albumId,
-                        trackName = album.trackName,
-                        artistId = album.artistId,
-                        artistName = album.artistName,
-                        onDismiss = { selectedAlbum = null },
-                        onNavigateToAlbumDetails = { albumId, trackId, trackName, artistId, artistName ->
-                            selectedAlbum = null
-                            navController.navigate(
-                                Route.Album(
-                                    albumId = albumId,
-                                    trackId = trackId,
-                                    trackName = trackName,
-                                    artistId = artistId,
-                                    artistName = artistName,
-                                )
-                            )
-                        },
-                    )
                 }
             }
         }

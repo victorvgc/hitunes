@@ -1,6 +1,6 @@
 package com.skilltest.data.repository
 
-import com.skilltest.data.datasource.SongsListDataSource
+import com.skilltest.data.datasource.SongDataSource
 import com.skilltest.domain.model.RecentlyPlayed
 import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
@@ -8,8 +8,8 @@ import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.SongRepository
 
 internal class SongRepositoryImpl(
-    private val remote: SongsListDataSource.Remote,
-    private val local: SongsListDataSource.Local,
+    private val remote: SongDataSource.Remote,
+    private val local: SongDataSource.Local,
 ) : SongRepository {
     override suspend fun searchSongsByTerm(term: String): ResultWrapper<SearchResult> =
         remote.fetchSearchedSongs(term)

@@ -50,8 +50,7 @@ fun SearchField(
         modifier = modifier,
         value = debounceTerm,
         onValueChange = { input ->
-            if (searchTerm.length > 2)
-                onStartedTyping(input)
+            onStartedTyping(input)
             debounceTerm = input
         },
         maxLines = 1,

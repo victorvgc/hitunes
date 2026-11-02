@@ -1,6 +1,6 @@
 package com.skilltest.data.repository
 
-import com.skilltest.data.datasource.SongsListDataSource
+import com.skilltest.data.datasource.SongDataSource
 import com.skilltest.domain.model.Failure
 import com.skilltest.domain.model.RecentlyPlayed
 import com.skilltest.domain.model.ResultWrapper
@@ -35,7 +35,7 @@ class SongRepositoryImplTest {
 
     private class FakeRemote(
         private val result: ResultWrapper<SearchResult>,
-    ) : SongsListDataSource.Remote {
+    ) : SongDataSource.Remote {
         var lastTerm: String? = null
         override suspend fun fetchSearchedSongs(term: String): ResultWrapper<SearchResult> {
             lastTerm = term
@@ -43,7 +43,7 @@ class SongRepositoryImplTest {
         }
     }
 
-    private class FakeLocal : SongsListDataSource.Local {
+    private class FakeLocal : SongDataSource.Local {
         val saveResult = ResultWrapper.Error<Unit>(Failure(msg = "disk full"))
         val fetchResult = ResultWrapper.Success(RecentlyPlayed(listOf(track)))
         var savedTrack: Track? = null

@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":data:datasource:remote"))
     implementation(project(":data:datasource:local"))
     implementation(project(":data:repository"))
+    implementation(project(":domain:usecase"))
 
     implementation(libs.androidx.compose.nav)
     implementation(libs.serialization)

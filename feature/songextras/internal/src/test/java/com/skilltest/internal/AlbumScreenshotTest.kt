@@ -10,6 +10,10 @@ import com.skilltest.internal.ui.AlbumSheet
 import com.skilltest.internal.ui.model.UiTrackAlbumInfo
 import com.skilltest.internal.ui.viewmodel.AlbumReducer
 import com.skilltest.internal.ui.viewmodel.AlbumViewModel
+import com.skilltest.domain.model.Album
+import com.skilltest.domain.model.ResultWrapper
+import com.skilltest.domain.repository.AlbumRepository
+import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +42,12 @@ class AlbumScreenshotTest {
                     ),
                     onDismiss = {},
                     onNavigateToAlbumDetails = {},
-                    viewModel = AlbumViewModel(AlbumReducer()),
+                    viewModel = AlbumViewModel(
+                        AlbumReducer(LoadAlbumDetailsUseCase(object : AlbumRepository {
+                            override suspend fun loadAlbum(albumId: String): ResultWrapper<Album> =
+                                ResultWrapper.Success(Album.empty())
+                        }))
+                    ),
                 )
             }
         }

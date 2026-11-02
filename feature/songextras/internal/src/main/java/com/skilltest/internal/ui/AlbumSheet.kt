@@ -33,27 +33,30 @@ import com.skilltest.internal.ui.viewmodel.AlbumComponentEffect
 import com.skilltest.internal.ui.viewmodel.AlbumComponentIntent
 import com.skilltest.internal.ui.viewmodel.AlbumViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumSheet(
     trackAlbumInfo: UiTrackAlbumInfo,
     onDismiss: () -> Unit,
-    onNavigateToAlbumDetails: (AlbumComponentEffect.NavigateToAlbumDetails) -> Unit,
+    onNavigateToAlbumDetails: (albumId: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AlbumViewModel = koinViewModel(),
+    viewModel: AlbumViewModel = koinViewModel { parametersOf(trackAlbumInfo.albumId) },
 ) {
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is AlbumComponentEffect.NavigateToAlbumDetails -> onNavigateToAlbumDetails(effect)
+                is AlbumComponentEffect.NavigateToAlbumDetails -> onNavigateToAlbumDetails(effect.albumId)
+                is AlbumComponentEffect.NavigateToSongDetails -> Unit
             }
         }
     }
 
     ModalBottomSheet(
         modifier = modifier,
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         AlbumSheetContent(
             trackAlbumInfo = trackAlbumInfo,
@@ -107,7 +110,9 @@ private fun AlbumSheetContent(
             Spacer(modifier = Modifier.height(Dimens.padding16))
 
             Row(
-                modifier = Modifier.fillMaxWidth().clickable(onClick = onViewAlbum),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onViewAlbum),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(Dimens.padding16)
             ) {

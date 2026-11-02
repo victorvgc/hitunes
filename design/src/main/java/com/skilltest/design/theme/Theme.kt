@@ -7,30 +7,49 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = Color.Black
+    primary = DarkPrimary,
+    onPrimary = DarkBackground,
+    secondary = DarkTextSecondary,
+    onSecondary = DarkBackground,
+    tertiary = DarkTextMuted,
+    onTertiary = DarkTextPrimary,
+    background = DarkBackground,
+    onBackground = DarkTextPrimary,
+    surface = DarkBackground,
+    onSurface = DarkTextPrimary,
+    surfaceVariant = DarkInputSurface,
+    onSurfaceVariant = DarkTextSecondary,
+    surfaceContainerLow = DarkSheetSurface,
+    surfaceContainer = DarkSheetSurface,
+    surfaceContainerHigh = DarkSheetSurface,
+    surfaceContainerHighest = DarkInputSurface,
+    outline = DarkTextMuted,
+    outlineVariant = DarkInputSurface,
+    scrim = DarkBackground,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    background = Color.White
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = LightPrimary,
+    onPrimary = LightBackground,
+    secondary = LightTextSecondary,
+    onSecondary = LightBackground,
+    tertiary = LightTextMuted,
+    onTertiary = LightBackground,
+    background = LightBackground,
+    onBackground = LightTextPrimary,
+    surface = LightBackground,
+    onSurface = LightTextPrimary,
+    surfaceVariant = LightInputSurface,
+    onSurfaceVariant = LightTextSecondary,
+    surfaceContainerLow = LightSheetSurface,
+    surfaceContainer = LightSheetSurface,
+    surfaceContainerHigh = LightSheetSurface,
+    surfaceContainerHighest = LightInputSurface,
+    outline = LightTextMuted,
+    outlineVariant = LightInputSurface,
+    scrim = LightTextPrimary,
 )
 
 private val Shapes = Shapes(

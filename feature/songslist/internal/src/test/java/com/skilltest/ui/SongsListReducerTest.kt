@@ -36,6 +36,7 @@ class SongsListReducerTest {
         val next = reducer.reduce(state, SongsListIntent.ClearSearch).partialStateChange.reduce(state)
 
         assertEquals("", next.searchTerm)
+        assertEquals(null, next.lastSearchedTerm)
         assertTrue(next.searchResult.isEmpty())
         assertFalse(next.isLoadingSearch)
     }
@@ -59,33 +60,54 @@ class SongsListReducerTest {
 
     @Test
     fun shortTermsDoNotStartSearchButLongTermsQueueIt() = runTest {
-        val state = SongsListState()
-        val short = reducer.reduce(state, SongsListIntent.StartPerformSearch("ab"))
-        val long = reducer.reduce(state, SongsListIntent.StartPerformSearch("abc"))
+        val shortState = SongsListState(searchTerm = "ab")
+        val longState = SongsListState(searchTerm = "abc")
+        val short = reducer.reduce(shortState, SongsListIntent.StartPerformSearch("ab"))
+        val long = reducer.reduce(longState, SongsListIntent.StartPerformSearch("abc"))
 
-        assertFalse(short.partialStateChange.reduce(state).isLoadingSearch)
+        assertFalse(short.partialStateChange.reduce(shortState).isLoadingSearch)
         assertTrue(short.derivedIntents.isEmpty())
-        assertTrue(long.partialStateChange.reduce(state).isLoadingSearch)
+        assertTrue(long.partialStateChange.reduce(longState).isLoadingSearch)
         assertEquals(listOf(SongsListIntent.PerformSearch("abc")), long.derivedIntents)
     }
 
     @Test
-    fun typingChangesOnlySearchLoadingFlag() = runTest {
-        val state = SongsListState(isLoadingRecentlyPlayed = true)
+    fun typingClearsOldResultsAndWaitsForDebouncedSearch() = runTest {
+        val state = SongsListState(
+            isLoadingRecentlyPlayed = true,
+            isLoadingSearch = true,
+            searchResult = listOf(track.toUiTrack()),
+            lastSearchedTerm = "old query",
+        )
         val short = reducer.reduce(state, SongsListIntent.TypingSearchTerm("ab"))
             .partialStateChange.reduce(state)
         val long = reducer.reduce(state, SongsListIntent.TypingSearchTerm("abc"))
             .partialStateChange.reduce(state)
 
         assertFalse(short.isLoadingSearch)
-        assertTrue(long.isLoadingSearch)
+        assertEquals("ab", short.searchTerm)
+        assertTrue(short.searchResult.isEmpty())
+        assertEquals(null, short.lastSearchedTerm)
+        assertFalse(long.isLoadingSearch)
+        assertEquals("abc", long.searchTerm)
+        assertTrue(long.searchResult.isEmpty())
         assertTrue(long.isLoadingRecentlyPlayed)
+    }
+
+    @Test
+    fun debouncedCallbackIgnoresAnOutdatedQuery() = runTest {
+        val state = SongsListState(searchTerm = "abcd")
+
+        val reduction = reducer.reduce(state, SongsListIntent.StartPerformSearch("abc"))
+
+        assertTrue(reduction.derivedIntents.isEmpty())
+        assertEquals(state, reduction.partialStateChange.reduce(state))
     }
 
     @Test
     fun performSearchForwardsTermAndMapsResults() = runTest {
         repository.searchResult = ResultWrapper.Success(SearchResult(listOf(track)))
-        val state = SongsListState(isLoadingSearch = true)
+        val state = SongsListState(searchTerm = "jazz", isLoadingSearch = true)
 
         val next = reducer.reduce(state, SongsListIntent.PerformSearch("jazz"))
             .partialStateChange.reduce(state)
@@ -94,19 +116,42 @@ class SongsListReducerTest {
         assertEquals(listOf("track-1"), next.searchResult.map { it.id })
         assertEquals("album-2", next.searchResult.single().albumId)
         assertEquals("jazz", next.searchTerm)
+        assertEquals("jazz", next.lastSearchedTerm)
         assertFalse(next.isLoadingSearch)
     }
 
     @Test
     fun failedSearchClearsLoadingAndProducesNoResults() = runTest {
         repository.searchResult = ResultWrapper.Error(Failure(msg = "offline"))
-        val state = SongsListState(isLoadingSearch = true)
+        val state = SongsListState(searchTerm = "jazz", isLoadingSearch = true)
 
         val next = reducer.reduce(state, SongsListIntent.PerformSearch("jazz"))
             .partialStateChange.reduce(state)
 
         assertTrue(next.searchResult.isEmpty())
         assertFalse(next.isLoadingSearch)
+    }
+
+    @Test
+    fun olderSearchResponseCannotReplaceNewerQuery() = runTest {
+        repository.searchResult = ResultWrapper.Success(SearchResult(listOf(track)))
+        val state = SongsListState(searchTerm = "new query", isLoadingSearch = true)
+
+        val next = reducer.reduce(state, SongsListIntent.PerformSearch("old query"))
+            .partialStateChange.reduce(state)
+
+        assertEquals("new query", next.searchTerm)
+        assertTrue(next.searchResult.isEmpty())
+    }
+
+    @Test
+    fun returningToScreenDoesNotRepeatCompletedSearch() = runTest {
+        val state = SongsListState(searchTerm = "jazz", lastSearchedTerm = "jazz")
+
+        val reduction = reducer.reduce(state, SongsListIntent.StartPerformSearch("jazz"))
+
+        assertTrue(reduction.derivedIntents.isEmpty())
+        assertEquals(state, reduction.partialStateChange.reduce(state))
     }
 
     @Test

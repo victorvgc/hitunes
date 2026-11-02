@@ -14,10 +14,6 @@ sealed interface Route {
     @Serializable
     data class Album(
         val albumId: String,
-        val trackId: String,
-        val trackName: String,
-        val artistId: String,
-        val artistName: String,
     ) : Route
 
     @Serializable
