@@ -4,7 +4,7 @@ import com.skilltest.domain.model.Album
 
 data class RemoteAlbum(
     val resultCount: Int? = null,
-    val results: List<RemoteEntity>? = null,
+    val results: List<RemoteEntity?>? = null,
 ) {
     companion object {
         private const val NOT_EXPLICIT_VALUE = "notExplicit"
@@ -12,7 +12,7 @@ data class RemoteAlbum(
     }
 
     fun toDomain(): Album {
-        val entities = results.orEmpty()
+        val entities = results.orEmpty().filterNotNull()
         val collection = entities.firstOrNull {
             it.wrapperType.equals(WRAPPER_COLLECTION, ignoreCase = true)
         }

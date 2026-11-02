@@ -38,9 +38,28 @@ class SongUseCasesTest {
     fun loadingStartsOnlyAfterTwoCharacters() = runTest {
         val useCase = ShouldShowSearchLoadingUseCase()
 
-        assertEquals(false, useCase(ShouldShowSearchLoadingUseCase.Request("")).data)
-        assertEquals(false, useCase(ShouldShowSearchLoadingUseCase.Request("ab")).data)
-        assertEquals(true, useCase(ShouldShowSearchLoadingUseCase.Request("abc")).data)
+        for ((term, expected) in listOf("" to false, "a" to false, "ab" to false, "abc" to true)) {
+            val request = ShouldShowSearchLoadingUseCase.Request(term, term, null)
+            assertEquals("Loading for query '$term'", expected, useCase(request).data)
+        }
+    }
+
+    @Test
+    fun loadingDoesNotStartForOutdatedOrAlreadySearchedTerms() = runTest {
+        val useCase = ShouldShowSearchLoadingUseCase()
+
+        assertEquals(
+            false,
+            useCase(ShouldShowSearchLoadingUseCase.Request("abc", "abcd", null)).data
+        )
+        assertEquals(
+            false,
+            useCase(ShouldShowSearchLoadingUseCase.Request("abc", "abc", "abc")).data
+        )
+        assertEquals(
+            true,
+            useCase(ShouldShowSearchLoadingUseCase.Request("abc", "abc", "old")).data
+        )
     }
 
     private class RecordingRepository(

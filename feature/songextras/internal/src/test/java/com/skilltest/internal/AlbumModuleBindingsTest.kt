@@ -22,7 +22,7 @@ class AlbumModuleBindingsTest {
                     single<AlbumRepository> {
                         object : AlbumRepository {
                             override suspend fun loadAlbum(albumId: String): ResultWrapper<Album> =
-                                ResultWrapper.Success(Album.empty())
+                                ResultWrapper.Success(Album("", "", "", false, "", emptyList()))
                         }
                     }
                 },

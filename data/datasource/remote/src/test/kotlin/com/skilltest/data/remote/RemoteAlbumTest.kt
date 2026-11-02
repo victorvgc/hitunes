@@ -54,7 +54,7 @@ class RemoteAlbumTest {
 
     @Test
     fun remoteEntityMissingFieldsMapToEmptyTrack() {
-        val track = RemoteEntity().toDomain()
+        val track = requireNotNull(RemoteEntity(wrapperType = "track").toTrackDomain())
 
         assertEquals("", track.id)
         assertEquals("", track.name)

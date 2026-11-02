@@ -4,18 +4,19 @@ import com.skilltest.domain.model.Album
 import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.repository.AlbumRepository
 import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase
+import com.skilltest.internal.ui.model.UiAlbum
 import com.skilltest.internal.ui.viewmodel.AlbumComponentEffect
 import com.skilltest.internal.ui.viewmodel.AlbumComponentIntent
 import com.skilltest.internal.ui.viewmodel.AlbumComponentState
 import com.skilltest.internal.ui.viewmodel.AlbumReducer
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AlbumReducerTest {
-    private val album = Album.empty().copy(id = "album-8", name = "Thriller")
+    private val album = Album("album-8", "Thriller", "", false, "Michael Jackson", emptyList())
     private val repository = FakeAlbumRepository(album)
     private val reducer = AlbumReducer(LoadAlbumDetailsUseCase(repository))
 
@@ -44,8 +45,7 @@ class AlbumReducerTest {
         )
         assertEquals(
             listOf(
-                AlbumComponentIntent.LoadingDetails,
-                AlbumComponentIntent.LoadAlbumDetails("album-8"),
+                AlbumComponentIntent.LoadingDetails("album-8"),
             ),
             reduction.derivedIntents,
         )
@@ -53,10 +53,15 @@ class AlbumReducerTest {
 
     @Test
     fun loadingAlbumUpdatesStateAndDelegatesToUseCase() = runBlocking {
-        val loading = reducer.reduce(
+        val loadingReduction = reducer.reduce(
             AlbumComponentState(),
-            AlbumComponentIntent.LoadingDetails,
-        ).partialStateChange.reduce(AlbumComponentState())
+            AlbumComponentIntent.LoadingDetails("album-8"),
+        )
+        val loading = loadingReduction.partialStateChange.reduce(AlbumComponentState())
+        assertEquals(
+            listOf(AlbumComponentIntent.LoadAlbumDetails("album-8")),
+            loadingReduction.derivedIntents
+        )
         assertTrue(loading.isLoading)
 
         val loaded = reducer.reduce(
@@ -65,7 +70,7 @@ class AlbumReducerTest {
         ).partialStateChange.reduce(loading)
 
         assertEquals("album-8", repository.requestedId)
-        assertEquals(album, loaded.album)
+        assertEquals(UiAlbum(albumName = "Thriller", artistName = "Michael Jackson"), loaded.album)
         assertFalse(loaded.isLoading)
     }
 

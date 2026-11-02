@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
       <module name="HiTunes.core.util" target="25" />
+      <module name="HiTunes.feature.songplayer.internal" target="25" />
     </bytecodeTargetLevel>
   </component>
 </project>

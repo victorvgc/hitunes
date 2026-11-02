@@ -1,6 +1,7 @@
 package com.skilltest.data.remote
 
 import com.google.gson.Gson
+import com.skilltest.data.remote.model.RemoteEntity
 import com.skilltest.data.remote.model.RemoteSearchResult
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -10,7 +11,7 @@ import org.junit.Test
 class RemoteSearchResultTest {
     @Test
     fun mapsIdsNamesAndArtworkForExplicitTrack() {
-        val track = remoteTrack("explicit").toDomain()
+        val track = requireNotNull(remoteTrack("explicit").toTrackDomain())
 
         assertEquals("42", track.id)
         assertEquals("7", track.artistId)
@@ -24,7 +25,7 @@ class RemoteSearchResultTest {
 
     @Test
     fun keepsOriginalNamesWhenNotExplicitIgnoringCase() {
-        val track = remoteTrack("NoTeXpLiCiT").toDomain()
+        val track = requireNotNull(remoteTrack("NoTeXpLiCiT").toTrackDomain())
 
         assertEquals("Original track", track.name)
         assertEquals("Original album", track.albumName)
@@ -42,8 +43,21 @@ class RemoteSearchResultTest {
     }
 
     @Test
+    fun skipsNonTrackWrappersAndAcceptsTrackWrappersIgnoringCase() {
+        val result = RemoteSearchResult(
+            results = listOf(
+                RemoteEntity(),
+                RemoteEntity(wrapperType = "collection", collectionId = 9),
+                remoteTrack("notExplicit").copy(wrapperType = "TrAcK"),
+            ),
+        ).toDomain()
+
+        assertEquals(listOf("42"), result.trackList.map { it.id })
+    }
+
+    @Test
     fun missingTrackFieldsMapToEmptyValuesAndFalse() {
-        val track = RemoteSearchResult.RemoteTrack().toDomain()
+        val track = requireNotNull(RemoteEntity(wrapperType = "track").toTrackDomain())
 
         assertEquals("", track.id)
         assertEquals("", track.artistId)
@@ -59,15 +73,17 @@ class RemoteSearchResultTest {
     fun missingResultsMapToEmptyListAndNullEntriesAreSkipped() {
         assertTrue(RemoteSearchResult().toDomain().trackList.isEmpty())
 
-        val result = RemoteSearchResult(results = listOf(null, RemoteSearchResult.RemoteTrack()))
+        val result = RemoteSearchResult(results = listOf(null, RemoteEntity(wrapperType = "track")))
         assertEquals(1, result.toDomain().trackList.size)
     }
 
     @Test
     fun collectionExplicitnessControlsAlbumNameIndependently() {
-        val track = remoteTrack("notExplicit")
-            .copy(collectionExplicitness = "explicit")
-            .toDomain()
+        val track = requireNotNull(
+            remoteTrack("notExplicit")
+                .copy(collectionExplicitness = "explicit")
+                .toTrackDomain()
+        )
 
         assertFalse(track.isExplicit)
         assertEquals("Censored album", track.albumName)
@@ -76,7 +92,7 @@ class RemoteSearchResultTest {
     @Test
     fun omittedJsonFieldsMapToEmptyDomainValues() {
         val remote = Gson().fromJson(
-            """{"results":[{"trackId":42},null]}""",
+            """{"results":[{"wrapperType":"track","trackId":42},null]}""",
             RemoteSearchResult::class.java,
         )
 
@@ -87,7 +103,8 @@ class RemoteSearchResultTest {
         assertFalse(track.isExplicit)
     }
 
-    private fun remoteTrack(explicitness: String) = RemoteSearchResult.RemoteTrack(
+    private fun remoteTrack(explicitness: String) = RemoteEntity(
+        wrapperType = "track",
         artistId = 7,
         collectionId = 9,
         trackId = 42,

@@ -99,7 +99,7 @@ class SongsListReducer(
                 )
             ).data == true
 
-            if (shouldSearch) {
+            if (!shouldSearch) {
                 Reduction.none()
             } else {
                 Reduction(

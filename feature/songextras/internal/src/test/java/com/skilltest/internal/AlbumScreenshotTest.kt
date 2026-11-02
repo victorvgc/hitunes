@@ -2,24 +2,25 @@ package com.skilltest.internal
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.github.takahirom.roborazzi.captureScreenRoboImage
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
+import com.github.takahirom.roborazzi.captureScreenRoboImage
 import com.skilltest.design.theme.HiTunesTheme
-import com.skilltest.internal.ui.AlbumDetails
+import com.skilltest.domain.model.Album
+import com.skilltest.domain.model.ResultWrapper
+import com.skilltest.domain.model.Track
+import com.skilltest.domain.repository.AlbumRepository
+import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase
+import com.skilltest.internal.ui.AlbumDetailsScreen
 import com.skilltest.internal.ui.AlbumSheet
 import com.skilltest.internal.ui.model.UiTrackAlbumInfo
 import com.skilltest.internal.ui.viewmodel.AlbumReducer
 import com.skilltest.internal.ui.viewmodel.AlbumViewModel
-import com.skilltest.domain.model.Album
-import com.skilltest.domain.model.ResultWrapper
-import com.skilltest.domain.repository.AlbumRepository
-import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
-import androidx.test.ext.junit.runners.AndroidJUnit4
 
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -45,7 +46,7 @@ class AlbumScreenshotTest {
                     viewModel = AlbumViewModel(
                         AlbumReducer(LoadAlbumDetailsUseCase(object : AlbumRepository {
                             override suspend fun loadAlbum(albumId: String): ResultWrapper<Album> =
-                                ResultWrapper.Success(Album.empty())
+                                ResultWrapper.Success(Album("", "", "", false, "", emptyList()))
                         }))
                     ),
                 )
@@ -57,17 +58,39 @@ class AlbumScreenshotTest {
 
     @Test
     fun albumDetails() {
+        val viewModel = AlbumViewModel(
+            AlbumReducer(LoadAlbumDetailsUseCase(object : AlbumRepository {
+                override suspend fun loadAlbum(albumId: String): ResultWrapper<Album> =
+                    ResultWrapper.Success(
+                        Album(
+                            id = albumId,
+                            name = "Thriller",
+                            coverUrl = "",
+                            isExplicit = false,
+                            artistName = "Michael Jackson",
+                            trackList = listOf(
+                                Track(
+                                    "track-1",
+                                    "Thriller",
+                                    "Michael Jackson",
+                                    "Thriller",
+                                    "",
+                                    false
+                                )
+                            ),
+                        )
+                    )
+            }))
+        )
         composeRule.setContent {
             HiTunesTheme(darkTheme = false) {
-                AlbumDetails(
+                AlbumDetailsScreen(
                     albumId = "album-2",
-                    trackId = "track-1",
-                    trackName = "Thriller",
-                    artistId = "artist-3",
-                    artistName = "Michael Jackson",
+                    viewModel = viewModel,
                 )
             }
         }
+        composeRule.waitUntil { viewModel.state.value.album.albumName == "Thriller" }
         composeRule.waitForIdle()
         captureScreenRoboImage()
     }
