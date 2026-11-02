@@ -1,0 +1,4 @@
+com.skilltest.core.util.test.util-mergeDebugUnitTestResources-0 /Users/carvalho/Documents/studies/HiTunes/core/util/build/intermediates/incremental/debugUnitTest/mergeDebugUnitTestResources/merged.dir
+com.skilltest.core.util.test.util-mergeDebugUnitTestResources-1 /Users/carvalho/Documents/studies/HiTunes/core/util/build/intermediates/incremental/debugUnitTest/mergeDebugUnitTestResources/stripped.dir
+com.skilltest.core.util.test.util-debugUnitTest-2 /Users/carvalho/Documents/studies/HiTunes/core/util/build/intermediates/merged_res/debugUnitTest/mergeDebugUnitTestResources
+gradleHome-0 /Users/carvalho/.gradle
