@@ -17,6 +17,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(versionCatalog.findLibrary("koin-core").get())
     testImplementation(versionCatalog.findLibrary("junit").get())
     testImplementation(versionCatalog.findLibrary("kotlinx-coroutines-test").get())
 }

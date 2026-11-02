@@ -1,10 +1,5 @@
 plugins {
     id("android-library-compose-convention")
-    alias(libs.plugins.android.roborazzi)
-}
-
-roborazzi {
-    outputDir.set(file("src/test/snapshots"))
 }
 
 android {

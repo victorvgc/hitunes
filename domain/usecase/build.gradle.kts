@@ -4,5 +4,4 @@ plugins {
 
 dependencies {
     api(project(":domain:repository"))
-    implementation(libs.koin.core)
 }

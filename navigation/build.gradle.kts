@@ -1,13 +1,10 @@
 plugins {
-    id("android-library-convention")
-    id("org.jetbrains.kotlin.plugin.compose")
+    id("android-library-compose-convention")
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.skilltest.navigation"
-
-    buildFeatures.compose = true
 }
 
 dependencies {

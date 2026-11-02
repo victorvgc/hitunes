@@ -9,5 +9,4 @@ android {
 dependencies {
     implementation(project(":feature:songextras:internal"))
     implementation(project(":core:presentation"))
-    implementation(libs.koin.core)
 }

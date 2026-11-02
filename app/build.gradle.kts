@@ -25,7 +25,6 @@ android {
             isDebuggable = true
             isMinifyEnabled = false
 
-
         }
         release {
             isMinifyEnabled = true
@@ -65,9 +64,6 @@ dependencies {
     implementation(libs.serialization)
 
     implementation(libs.androidx.splash)
-
-    implementation(libs.koin)
-    implementation(libs.koin.compose)
 
     implementation(libs.retrofit.core)
     implementation(libs.okhttp.logging)

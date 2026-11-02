@@ -5,5 +5,4 @@ plugins {
 dependencies {
     api(project(":domain:repository"))
     implementation(project(":data:datasource"))
-    implementation(libs.koin.core)
 }
