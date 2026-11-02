@@ -21,6 +21,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.skilltest.design.component.ThumbnailImage
+import com.skilltest.design.util.ComponentPreview
+import com.skilltest.design.util.PreviewBox
+import com.skilltest.design.util.ScreenPreview
 import com.skilltest.domain.model.Track
 import com.skilltest.songplayer.internal.viewmodel.PlayerIntent
 import com.skilltest.songplayer.internal.viewmodel.PlayerState
@@ -143,3 +146,48 @@ private fun formatTime(milliseconds: Long): String {
     val seconds = milliseconds.coerceAtLeast(0) / 1_000
     return "%d:%02d".format(seconds / 60, seconds % 60)
 }
+
+@ComponentPreview
+@Composable
+private fun MiniPlayerContentPreview() {
+    PreviewBox {
+        MiniPlayerContent(
+            state = PlayerState(
+                track = previewTrack,
+                isPlaying = true,
+                positionMs = 83_000,
+                durationMs = 357_000,
+                hasNext = true,
+            ),
+            onIntent = {},
+            onOpenSong = {},
+        )
+    }
+}
+
+@ScreenPreview
+@Composable
+private fun SongDetailsContentPreview() {
+    PreviewBox {
+        SongDetailsContent(
+            track = previewTrack,
+            state = PlayerState(
+                track = previewTrack,
+                positionMs = 83_000,
+                durationMs = 357_000,
+                hasNext = true,
+                hasPrevious = true,
+            ),
+            onIntent = {},
+        )
+    }
+}
+
+private val previewTrack = Track(
+    id = "track-1",
+    name = "Thriller",
+    artistName = "Michael Jackson",
+    albumName = "Thriller",
+    artworkUrl = "",
+    isExplicit = false,
+)

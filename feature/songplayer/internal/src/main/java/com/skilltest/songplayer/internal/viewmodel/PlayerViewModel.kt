@@ -9,6 +9,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import com.skilltest.domain.model.Track
+import com.skilltest.domain.usecase.AddToRecentlyPlayedUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,9 @@ sealed interface PlayerIntent {
     data class SeekTo(val positionMs: Long) : PlayerIntent
 }
 
-class PlayerViewModel : ViewModel() {
+class PlayerViewModel(
+    private val addToRecentlyPlayedUseCase: AddToRecentlyPlayedUseCase,
+) : ViewModel() {
     private val mutableState = MutableStateFlow(PlayerState())
     val state = mutableState.asStateFlow()
 
@@ -46,6 +49,13 @@ class PlayerViewModel : ViewModel() {
     private var progressJob: Job? = null
     private val listener = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) = refreshState()
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            val track = currentQueue.firstOrNull { it.id == mediaItem?.mediaId } ?: return
+            viewModelScope.launch {
+                addToRecentlyPlayedUseCase(AddToRecentlyPlayedUseCase.Request(track))
+            }
+        }
     }
 
     fun bind(controller: MediaController?) {

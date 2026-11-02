@@ -5,6 +5,7 @@ import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
 import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.SongRepository
+import com.skilltest.domain.usecase.GetRecentlyPlayedUseCase
 import com.skilltest.domain.usecase.SearchSongsByTermUseCase
 import com.skilltest.domain.usecase.ShouldShowSearchLoadingUseCase
 import com.skilltest.ui.model.UiTrack
@@ -28,18 +29,20 @@ class TrackOptionsEffectTest {
             artistId = "artist-7",
             albumId = "album-8",
         )
+        val repository = object : SongRepository {
+            override suspend fun searchSongsByTerm(term: String) =
+                ResultWrapper.Success(SearchResult(emptyList()))
+
+            override suspend fun addToRecentlyPlayed(track: Track) =
+                ResultWrapper.Success(Unit)
+
+            override suspend fun getRecentlyPlayed() =
+                ResultWrapper.Success(RecentlyPlayed(emptyList()))
+        }
         val reducer = SongsListReducer(
-            SearchSongsByTermUseCase(object : SongRepository {
-                override suspend fun searchSongsByTerm(term: String) =
-                    ResultWrapper.Success(SearchResult(emptyList()))
-
-                override suspend fun addToRecentlyPlayed(track: Track) =
-                    ResultWrapper.Success(Unit)
-
-                override suspend fun getRecentlyPlayed() =
-                    ResultWrapper.Success(RecentlyPlayed(emptyList()))
-            }),
+            SearchSongsByTermUseCase(repository),
             ShouldShowSearchLoadingUseCase(),
+            GetRecentlyPlayedUseCase(repository),
         )
 
         val reduction = reducer.reduce(

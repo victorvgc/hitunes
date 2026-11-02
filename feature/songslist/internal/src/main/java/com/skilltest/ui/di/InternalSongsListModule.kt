@@ -10,6 +10,7 @@ val internalSongsListModule = module {
     factory {
         SongsListReducer(
             get(),
+            get(),
             get()
         )
     }

@@ -6,6 +6,7 @@ import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
 import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.SongRepository
+import com.skilltest.domain.usecase.GetRecentlyPlayedUseCase
 import com.skilltest.domain.usecase.SearchSongsByTermUseCase
 import com.skilltest.domain.usecase.ShouldShowSearchLoadingUseCase
 import com.skilltest.ui.viewmodel.SongsListEffect
@@ -23,6 +24,7 @@ class SongsListReducerTest {
     private val reducer = SongsListReducer(
         SearchSongsByTermUseCase(repository),
         ShouldShowSearchLoadingUseCase(),
+        GetRecentlyPlayedUseCase(repository),
     )
 
     @Test
@@ -163,13 +165,25 @@ class SongsListReducerTest {
 
     @Test
     fun recentTracksLoadIntoStateWithAlbumAndArtistIds() = runTest {
+        repository.recentlyPlayedResult = ResultWrapper.Success(RecentlyPlayed(listOf(track)))
         val state = SongsListState(isLoadingRecentlyPlayed = true)
         val next = reducer.reduce(state, SongsListIntent.LoadingRecentlyPlayed)
             .partialStateChange.reduce(state)
 
-        assertEquals(10, next.recentlyPlayed.size)
-        assertEquals("album-1", next.recentlyPlayed.first().albumId)
-        assertEquals("artist-1", next.recentlyPlayed.first().artistId)
+        assertEquals(listOf("track-1"), next.recentlyPlayed.map { it.id })
+        assertEquals("album-2", next.recentlyPlayed.first().albumId)
+        assertEquals("artist-3", next.recentlyPlayed.first().artistId)
+        assertFalse(next.isLoadingRecentlyPlayed)
+    }
+
+    @Test
+    fun failedRecentTracksLoadClearsLoadingWithNoTracks() = runTest {
+        repository.recentlyPlayedResult = ResultWrapper.Error(Failure(msg = "disk error"))
+        val state = SongsListState(isLoadingRecentlyPlayed = true)
+        val next = reducer.reduce(state, SongsListIntent.LoadingRecentlyPlayed)
+            .partialStateChange.reduce(state)
+
+        assertTrue(next.recentlyPlayed.isEmpty())
         assertFalse(next.isLoadingRecentlyPlayed)
     }
 
@@ -182,8 +196,10 @@ class SongsListReducerTest {
             return searchResult
         }
 
+        var recentlyPlayedResult: ResultWrapper<RecentlyPlayed> = ResultWrapper.Success(RecentlyPlayed(emptyList()))
+
         override suspend fun addToRecentlyPlayed(track: Track) = ResultWrapper.Success(Unit)
-        override suspend fun getRecentlyPlayed() = ResultWrapper.Success(RecentlyPlayed(emptyList()))
+        override suspend fun getRecentlyPlayed() = recentlyPlayedResult
     }
 
     private fun Track.toUiTrack() = com.skilltest.ui.model.UiTrack(
