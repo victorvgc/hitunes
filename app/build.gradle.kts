@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":domain:usecase"))
 
     implementation(libs.androidx.compose.nav)
+    implementation(libs.media3.session)
     implementation(libs.serialization)
 
     implementation(libs.androidx.splash)

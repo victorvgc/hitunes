@@ -7,6 +7,7 @@ import com.skilltest.ui.SongsListScreen
 @Composable
 fun SongListPage(
     navigateToPage: (Route) -> Unit,
+    onPlayTrack: (com.skilltest.domain.model.Track, List<com.skilltest.domain.model.Track>) -> Unit,
 ) {
-    SongsListScreen(navigateToPage = navigateToPage)
+    SongsListScreen(navigateToPage = navigateToPage, onPlayTrack = onPlayTrack)
 }

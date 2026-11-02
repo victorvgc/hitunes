@@ -52,7 +52,7 @@ class SongsListReducer(
         }
 
         is SongsListIntent.OpenTrackDetails -> {
-            Reduction.effect(NavigateToTrackDetails(intent.trackId))
+            Reduction.effect(NavigateToTrackDetails(intent.track))
         }
 
         is SongsListIntent.OpenTrackMoreOptions -> {

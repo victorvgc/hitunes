@@ -37,7 +37,7 @@ internal fun SongListComponent(
     isLoading: Boolean,
     recentlyPlayed: List<UiTrack>,
     searchResults: List<UiTrack>,
-    onTrackClick: (String) -> Unit,
+    onTrackClick: (UiTrack) -> Unit,
     onTrackMoreActionsClick: (UiTrack) -> Unit,
 ) {
     val trackList = if (isSearching) {
@@ -63,7 +63,7 @@ internal fun SongListComponent(
                 TrackItem(
                     track = track,
                     onClick = {
-                        onTrackClick(track.id)
+                        onTrackClick(track)
                     },
                     onMoreClick = {
                         onTrackMoreActionsClick(track)
@@ -129,7 +129,9 @@ private fun TrackItem(
 @ComponentPreview
 @Composable
 private fun SongListComponentPreview() {
-    PreviewBox(modifier = Modifier.width(320.dp).height(80.dp)) {
+    PreviewBox(modifier = Modifier
+        .width(320.dp)
+        .height(80.dp)) {
         SongListComponent(
             isSearching = false,
             isLoading = false,

@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    api(project(":feature:songplayer:internal"))
     implementation(project(":design"))
     implementation(project(":domain:model"))
     implementation(project(":domain:usecase"))

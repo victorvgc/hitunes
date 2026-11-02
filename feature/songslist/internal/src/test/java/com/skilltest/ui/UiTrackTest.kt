@@ -20,6 +20,7 @@ class UiTrackTest {
             albumName = "album",
             artistId = "artist-7",
             albumId = "album-8",
+            streamUrl = "https://audio.test/preview.mp3",
         )
 
         // when
@@ -34,6 +35,8 @@ class UiTrackTest {
             isExplicit = true,
             artistId = "artist-7",
             albumId = "album-8",
+            streamUrl = "https://audio.test/preview.mp3",
+            albumName = "album",
         )
 
         assertEquals(expected, result)

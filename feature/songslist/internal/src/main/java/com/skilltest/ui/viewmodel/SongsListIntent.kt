@@ -17,5 +17,5 @@ sealed class SongsListIntent(
     data class OpenTrackMoreOptions(val track: UiTrack) :
         SongsListIntent("OpenMoreOptionsForTrack")
 
-    data class OpenTrackDetails(val trackId: String) : SongsListIntent("OpenDetailsForTrack")
+    data class OpenTrackDetails(val track: UiTrack) : SongsListIntent("OpenDetailsForTrack")
 }

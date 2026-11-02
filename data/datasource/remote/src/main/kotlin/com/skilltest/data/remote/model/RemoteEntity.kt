@@ -41,6 +41,7 @@ data class RemoteEntity(
             isExplicit = isExplicit,
             artistId = artistId?.toString().orEmpty(),
             albumId = collectionId?.toString().orEmpty(),
+            streamUrl = previewUrl.orEmpty(),
         )
     }
 }

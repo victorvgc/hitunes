@@ -20,6 +20,7 @@ class RemoteSearchResultTest {
         assertEquals("Censored album", track.albumName)
         assertEquals("Artist", track.artistName)
         assertEquals("https://art.test/cover", track.artworkUrl)
+        assertEquals("https://art.test/preview", track.streamUrl)
         assertTrue(track.isExplicit)
     }
 

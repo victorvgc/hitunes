@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    api(project(":domain:model"))
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 

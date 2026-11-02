@@ -156,8 +156,9 @@ class SongsListReducerTest {
 
     @Test
     fun trackDetailsProducesNavigationEffect() = runTest {
-        val reduction = reducer.reduce(SongsListState(), SongsListIntent.OpenTrackDetails("track-1"))
-        assertEquals(SongsListEffect.NavigateToTrackDetails("track-1"), reduction.effects.single())
+        val uiTrack = track.toUiTrack()
+        val reduction = reducer.reduce(SongsListState(), SongsListIntent.OpenTrackDetails(uiTrack))
+        assertEquals(SongsListEffect.NavigateToTrackDetails(uiTrack), reduction.effects.single())
     }
 
     @Test
