@@ -18,12 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.R
 import com.skilltest.design.theme.Dimens
+import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.util.PreviewBox
 import kotlinx.coroutines.delay
-import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -38,7 +37,6 @@ fun SearchField(
     alpha: Float = 1f,
 ) {
     var debounceTerm by remember(searchTerm) { mutableStateOf(searchTerm) }
-    Timber.e("testing: $searchTerm -> $debounceTerm")
 
     LaunchedEffect(debounceTerm) {
         delay(1.seconds)
@@ -84,7 +82,6 @@ fun SearchField(
     )
 }
 
-// Fades everything except the leading icon, which must stay opaque for the shared-element handoff.
 @Composable
 private fun rememberFadingFieldColors(alpha: Float): TextFieldColors {
     val base = TextFieldDefaults.colors()

@@ -23,9 +23,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.skilltest.design.component.ActionButton
@@ -37,8 +42,8 @@ import com.skilltest.ui.viewmodel.SongsListIntent
 import com.skilltest.ui.viewmodel.SongsListState
 import com.skilltest.design.R as designR
 
-private const val ICON_TRAVEL_MS = 500
-private const val FIELD_FADE_MS = 200
+private const val ICON_TRAVEL_MS = 300
+private const val FIELD_FADE_MS = 100
 private const val SEARCH_ICON_KEY = "search-icon"
 
 @Composable
@@ -47,6 +52,9 @@ fun ColumnScope.SongsListHeader(
     onIntent: (SongsListIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     SharedTransitionLayout(modifier) {
         Column(
             verticalArrangement = Arrangement.spacedBy(Dimens.padding16)
@@ -95,7 +103,7 @@ fun ColumnScope.SongsListHeader(
                 exit = shrinkVertically(
                     animationSpec = tween(FIELD_FADE_MS / 2, delayMillis = ICON_TRAVEL_MS / 2),
                     shrinkTowards = Alignment.Top
-                )
+                ),
             ) {
                 val fieldAlpha by transition.animateFloat(
                     transitionSpec = {
@@ -108,9 +116,21 @@ fun ColumnScope.SongsListHeader(
                     label = "searchFieldAlpha",
                 ) { state -> if (state == EnterExitState.Visible) 1f else 0f }
 
+                val fieldReady = transition.currentState == EnterExitState.Visible &&
+                        transition.targetState == EnterExitState.Visible && !transition.isRunning
+
+                LaunchedEffect(fieldReady) {
+                    if (fieldReady) {
+                        focusRequester.requestFocus()
+                        keyboardController?.show()
+                    }
+                }
+
 
                 SearchField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .fillMaxWidth(),
                     leadingIconModifier = Modifier.sharedElement(
                         rememberSharedContentState(SEARCH_ICON_KEY),
                         animatedVisibilityScope = this@AnimatedVisibility,
@@ -126,15 +146,13 @@ fun ColumnScope.SongsListHeader(
                     },
                     onStartedTyping = {
                         onIntent(SongsListIntent.TypingSearchTerm(it))
-                    }
+                    },
                 )
             }
         }
     }
 }
 
-// Opening (icon moves down): down first, then left.
-// Closing (icon moves up): right first, then up, the exact reverse path.
 @OptIn(ExperimentalSharedTransitionApi::class)
 private val SearchBoundsTransform = BoundsTransform { initial, target ->
     val corner = if (target.top > initial.top) {

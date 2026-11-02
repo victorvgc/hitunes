@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
@@ -48,37 +52,56 @@ class MainActivity : ComponentActivity() {
             }
 
             HiTunesTheme {
-                Scaffold(
-                    bottomBar = {
-                        if (!onSongPage && playerState.track != null) {
-                            MiniPlayerPage(playerViewModel) { track ->
-                                navController.navigate(Route.SongDetails.from(track))
+                SharedTransitionLayout {
+                    Scaffold(
+                        bottomBar = {
+                            AnimatedVisibility(
+                                visible = !onSongPage && playerState.track != null,
+                                enter = fadeIn(),
+                                exit = fadeOut(),
+                            ) {
+                                MiniPlayerPage(
+                                    viewModel = playerViewModel,
+                                    onOpenSong = { track ->
+                                        navController.navigate(Route.SongDetails.from(track))
+                                    },
+                                    sharedTransitionScope = this@SharedTransitionLayout,
+                                    animatedVisibilityScope = this@AnimatedVisibility,
+                                )
                             }
                         }
-                    }
-                ) { innerPadding ->
-                    NavHost(
-                        modifier = Modifier.padding(innerPadding),
-                        navController = navController,
-                        startDestination = Route.SongsList
-                    ) {
-                        composable<Route.SongsList> {
-                            SongListPage(
-                                navigateToPage = navController::navigate,
-                                onPlayTrack = { track, queue ->
-                                    playerViewModel.onIntent(PlayerIntent.PlayTrack(track, queue))
-                                },
-                            )
-                        }
-                        composable<Route.Album> { entry ->
-                            val album = entry.toRoute<Route.Album>()
-                            AlbumDetailsPage(
-                                albumId = album.albumId,
-                            )
-                        }
-                        composable<Route.SongDetails> { entry ->
-                            val song = entry.toRoute<Route.SongDetails>()
-                            SongDetailsPage(song.toTrack(), playerViewModel)
+                    ) { innerPadding ->
+                        NavHost(
+                            modifier = Modifier.padding(innerPadding),
+                            navController = navController,
+                            startDestination = Route.SongsList
+                        ) {
+                            composable<Route.SongsList> {
+                                SongListPage(
+                                    navigateToPage = navController::navigate,
+                                    onPlayTrack = { track, queue ->
+                                        playerViewModel.onIntent(
+                                            PlayerIntent.PlayTrack(
+                                                track,
+                                                queue
+                                            )
+                                        )
+                                    },
+                                )
+                            }
+                            composable<Route.Album> { entry ->
+                                val album = entry.toRoute<Route.Album>()
+                                AlbumDetailsPage(albumId = album.albumId)
+                            }
+                            composable<Route.SongDetails> { entry ->
+                                val song = entry.toRoute<Route.SongDetails>()
+                                SongDetailsPage(
+                                    track = song.toTrack(),
+                                    viewModel = playerViewModel,
+                                    sharedTransitionScope = this@SharedTransitionLayout,
+                                    animatedVisibilityScope = this@composable,
+                                )
+                            }
                         }
                     }
                 }

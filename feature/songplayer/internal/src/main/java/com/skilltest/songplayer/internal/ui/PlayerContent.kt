@@ -1,5 +1,7 @@
 package com.skilltest.songplayer.internal.ui
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -58,6 +60,8 @@ internal fun MiniPlayerContent(
     state: PlayerState,
     onIntent: (PlayerIntent) -> Unit,
     onOpenSong: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     val track = state.track ?: return
     Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
@@ -108,7 +112,12 @@ internal fun MiniPlayerContent(
                     ThumbnailImage(
                         url = track.artworkUrl,
                         contentDescription = null,
-                        modifier = Modifier.size(Dimens.size52),
+                        modifier = Modifier.artworkModifier(
+                            size = Dimens.size52,
+                            trackId = track.id,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ),
                     )
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
@@ -136,6 +145,8 @@ internal fun SongDetailsContent(
     track: Track,
     state: PlayerState,
     onIntent: (PlayerIntent) -> Unit,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     Column(
         modifier = Modifier
@@ -152,7 +163,12 @@ internal fun SongDetailsContent(
             ThumbnailImage(
                 url = track.artworkUrl,
                 contentDescription = track.name,
-                modifier = Modifier.size(Dimens.size246),
+                modifier = Modifier.artworkModifier(
+                    size = Dimens.size246,
+                    trackId = track.id,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                ),
             )
         }
 
@@ -179,6 +195,26 @@ internal fun SongDetailsContent(
             Spacer(modifier = Modifier.height(Dimens.padding16))
             PlaybackActions(state, onIntent)
         }
+    }
+}
+
+@Composable
+private fun Modifier.artworkModifier(
+    size: Dp,
+    trackId: String,
+    sharedTransitionScope: SharedTransitionScope?,
+    animatedVisibilityScope: AnimatedVisibilityScope?,
+): Modifier {
+    if (sharedTransitionScope == null || animatedVisibilityScope == null) {
+        return this.size(size)
+    }
+    return with(sharedTransitionScope) {
+        Modifier
+            .sharedElement(
+                rememberSharedContentState(key = "player-artwork-$trackId"),
+                animatedVisibilityScope = animatedVisibilityScope,
+            )
+            .size(size)
     }
 }
 
