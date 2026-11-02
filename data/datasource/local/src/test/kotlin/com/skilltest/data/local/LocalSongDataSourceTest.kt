@@ -2,9 +2,18 @@ package com.skilltest.data.local
 
 import androidx.room.Room
 import com.skilltest.data.local.database.HiTunesDatabase
+import com.skilltest.data.local.database.RecentlyPlayedDao
+import com.skilltest.data.local.model.RecentlyPlayedTrackEntity
 import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.Track
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -38,7 +47,7 @@ class LocalSongDataSourceTest {
 
     @Test
     fun emptyDatabaseReturnsNoTracks() = runTest {
-        val result = dataSource.fetchRecentlyPlayedSongs()
+        val result = dataSource.fetchRecentlyPlayedSongs().first()
 
         assertTrue(result is ResultWrapper.Success)
         assertTrue(result.data!!.trackList.isEmpty())
@@ -49,7 +58,28 @@ class LocalSongDataSourceTest {
         now = 100L
         dataSource.saveRecentlyPlayedSong(track("1"))
 
-        assertEquals(listOf(track("1")), dataSource.fetchRecentlyPlayedSongs().data!!.trackList)
+        assertEquals(
+            listOf(track("1")),
+            dataSource.fetchRecentlyPlayedSongs().first().data!!.trackList
+        )
+    }
+
+    @Test
+    fun activeObserverReceivesSavedTrackWithoutRefetching() = runBlocking {
+        val updates = Channel<List<Track>>(Channel.UNLIMITED)
+        val collector = launch(Dispatchers.Default) {
+            dataSource.fetchRecentlyPlayedSongs().collect { result ->
+                updates.send(result.data!!.trackList)
+            }
+        }
+        try {
+            assertEquals(emptyList<Track>(), withTimeout(5_000) { updates.receive() })
+            now = 100L
+            dataSource.saveRecentlyPlayedSong(track("1"))
+            assertEquals(listOf(track("1")), withTimeout(5_000) { updates.receive() })
+        } finally {
+            collector.cancel()
+        }
     }
 
     @Test
@@ -63,7 +93,7 @@ class LocalSongDataSourceTest {
 
         assertEquals(
             listOf("3", "2", "1"),
-            dataSource.fetchRecentlyPlayedSongs().data!!.trackList.map { it.id },
+            dataSource.fetchRecentlyPlayedSongs().first().data!!.trackList.map { it.id },
         )
     }
 
@@ -78,17 +108,27 @@ class LocalSongDataSourceTest {
 
         assertEquals(
             listOf("1", "2"),
-            dataSource.fetchRecentlyPlayedSongs().data!!.trackList.map { it.id },
+            dataSource.fetchRecentlyPlayedSongs().first().data!!.trackList.map { it.id },
         )
-        assertEquals(300L, database.recentlyPlayedDao().getAllByMostRecent().first().lastPlayed)
+        assertEquals(
+            300L,
+            database.recentlyPlayedDao().getAllByMostRecent().first().first().lastPlayed
+        )
     }
 
     @Test
     fun databaseFailureIsReturnedAsError() = runTest {
-        database.close()
+        val failingDao = object : RecentlyPlayedDao {
+            override suspend fun upsert(track: RecentlyPlayedTrackEntity): Unit =
+                throw IllegalStateException("disk error")
 
-        assertTrue(dataSource.fetchRecentlyPlayedSongs() is ResultWrapper.Error)
-        assertTrue(dataSource.saveRecentlyPlayedSong(track("1")) is ResultWrapper.Error)
+            override fun getAllByMostRecent() = flow<List<RecentlyPlayedTrackEntity>> {
+                throw IllegalStateException("disk error")
+            }
+        }
+        val failingSource = LocalSongDataSource(failingDao)
+        assertTrue(failingSource.fetchRecentlyPlayedSongs().first() is ResultWrapper.Error)
+        assertTrue(failingSource.saveRecentlyPlayedSong(track("1")) is ResultWrapper.Error)
     }
 
     private fun track(id: String) = Track(

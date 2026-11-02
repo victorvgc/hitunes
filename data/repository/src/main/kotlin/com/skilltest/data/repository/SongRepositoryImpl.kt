@@ -6,6 +6,7 @@ import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
 import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.SongRepository
+import kotlinx.coroutines.flow.Flow
 
 internal class SongRepositoryImpl(
     private val remote: SongDataSource.Remote,
@@ -17,6 +18,6 @@ internal class SongRepositoryImpl(
     override suspend fun addToRecentlyPlayed(track: Track): ResultWrapper<Unit> =
         local.saveRecentlyPlayedSong(track)
 
-    override suspend fun getRecentlyPlayed(): ResultWrapper<RecentlyPlayed> =
+    override fun getRecentlyPlayed(): Flow<ResultWrapper<RecentlyPlayed>> =
         local.fetchRecentlyPlayedSongs()
 }

@@ -13,6 +13,7 @@ import com.skilltest.ui.viewmodel.SongsListEffect
 import com.skilltest.ui.viewmodel.SongsListIntent
 import com.skilltest.ui.viewmodel.SongsListReducer
 import com.skilltest.ui.viewmodel.SongsListState
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -36,8 +37,8 @@ class TrackOptionsEffectTest {
             override suspend fun addToRecentlyPlayed(track: Track) =
                 ResultWrapper.Success(Unit)
 
-            override suspend fun getRecentlyPlayed() =
-                ResultWrapper.Success(RecentlyPlayed(emptyList()))
+            override fun getRecentlyPlayed() =
+                flowOf(ResultWrapper.Success(RecentlyPlayed(emptyList())))
         }
         val reducer = SongsListReducer(
             SearchSongsByTermUseCase(repository),

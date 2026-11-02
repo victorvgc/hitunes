@@ -6,6 +6,8 @@ import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
 import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.SongRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
@@ -66,7 +68,7 @@ class SongUseCasesTest {
     fun getRecentlyPlayedPreservesRepositoryResult() = runTest {
         val repository = RecordingRepository(ResultWrapper.Success(SearchResult(emptyList())))
 
-        val result = GetRecentlyPlayedUseCase(repository)(Unit)
+        val result = GetRecentlyPlayedUseCase(repository)(Unit).first()
 
         assertSame(repository.recentlyPlayedResult, result)
     }
@@ -99,7 +101,7 @@ class SongUseCasesTest {
             return addResult
         }
 
-        override suspend fun getRecentlyPlayed(): ResultWrapper<RecentlyPlayed> = recentlyPlayedResult
+        override fun getRecentlyPlayed() = flowOf(recentlyPlayedResult)
     }
 
     private companion object {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="acc_play">play</string>
+    <string name="acc_pause">pause</string>
+    <string name="acc_next_song">next song</string>
+    <string name="acc_previous_song">previous song</string>
+</resources>

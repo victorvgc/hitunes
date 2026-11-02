@@ -13,6 +13,7 @@ import com.skilltest.ui.viewmodel.SongsListEffect
 import com.skilltest.ui.viewmodel.SongsListIntent
 import com.skilltest.ui.viewmodel.SongsListReducer
 import com.skilltest.ui.viewmodel.SongsListState
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -44,12 +45,13 @@ class SongsListReducerTest {
     }
 
     @Test
-    fun loadingRecentTracksSetsFlagAndQueuesFollowUpIntent() = runTest {
+    fun loadingRecentTracksSetsFlagAndSubscribesToUpdates() = runTest {
         val state = SongsListState()
         val reduction = reducer.reduce(state, SongsListIntent.LoadRecentlyPlayed)
 
         assertTrue(reduction.partialStateChange.reduce(state).isLoadingRecentlyPlayed)
-        assertEquals(listOf(SongsListIntent.LoadingRecentlyPlayed), reduction.derivedIntents)
+        assertEquals(1, reduction.subscriptions.size)
+        assertEquals("recently-played", reduction.subscriptions.single().key)
     }
 
     @Test
@@ -167,7 +169,10 @@ class SongsListReducerTest {
     fun recentTracksLoadIntoStateWithAlbumAndArtistIds() = runTest {
         repository.recentlyPlayedResult = ResultWrapper.Success(RecentlyPlayed(listOf(track)))
         val state = SongsListState(isLoadingRecentlyPlayed = true)
-        val next = reducer.reduce(state, SongsListIntent.LoadingRecentlyPlayed)
+        val next = reducer.reduce(
+            state,
+            SongsListIntent.RecentlyPlayedChanged(repository.recentlyPlayedResult)
+        )
             .partialStateChange.reduce(state)
 
         assertEquals(listOf("track-1"), next.recentlyPlayed.map { it.id })
@@ -180,7 +185,10 @@ class SongsListReducerTest {
     fun failedRecentTracksLoadClearsLoadingWithNoTracks() = runTest {
         repository.recentlyPlayedResult = ResultWrapper.Error(Failure(msg = "disk error"))
         val state = SongsListState(isLoadingRecentlyPlayed = true)
-        val next = reducer.reduce(state, SongsListIntent.LoadingRecentlyPlayed)
+        val next = reducer.reduce(
+            state,
+            SongsListIntent.RecentlyPlayedChanged(repository.recentlyPlayedResult)
+        )
             .partialStateChange.reduce(state)
 
         assertTrue(next.recentlyPlayed.isEmpty())
@@ -199,7 +207,7 @@ class SongsListReducerTest {
         var recentlyPlayedResult: ResultWrapper<RecentlyPlayed> = ResultWrapper.Success(RecentlyPlayed(emptyList()))
 
         override suspend fun addToRecentlyPlayed(track: Track) = ResultWrapper.Success(Unit)
-        override suspend fun getRecentlyPlayed() = recentlyPlayedResult
+        override fun getRecentlyPlayed() = flowOf(recentlyPlayedResult)
     }
 
     private fun Track.toUiTrack() = com.skilltest.ui.model.UiTrack(

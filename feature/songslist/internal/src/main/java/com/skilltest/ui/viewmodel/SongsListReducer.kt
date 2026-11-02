@@ -1,6 +1,7 @@
 package com.skilltest.ui.viewmodel
 
 import com.skilltest.core.presentation.viewmodel.BaseReducer
+import com.skilltest.core.presentation.viewmodel.IntentSubscription
 import com.skilltest.core.presentation.viewmodel.Reduction
 import com.skilltest.domain.usecase.GetRecentlyPlayedUseCase
 import com.skilltest.domain.usecase.SearchSongsByTermUseCase
@@ -14,6 +15,7 @@ import com.skilltest.ui.viewmodel.SongsListStateChange.SearchCleared
 import com.skilltest.ui.viewmodel.SongsListStateChange.SearchTermChanged
 import com.skilltest.ui.viewmodel.SongsListStateChange.StartSearching
 import com.skilltest.ui.viewmodel.SongsListStateChange.TrackListLoading
+import kotlinx.coroutines.flow.map
 
 class SongsListReducer(
     private val searchSongsByTermUseCase: SearchSongsByTermUseCase,
@@ -31,7 +33,16 @@ class SongsListReducer(
         SongsListIntent.LoadRecentlyPlayed -> {
             Reduction(
                 partialStateChange = TrackListLoading(recentlyPlayed = true),
-                derivedIntents = listOf(SongsListIntent.LoadingRecentlyPlayed)
+                subscriptions = listOf(
+                    IntentSubscription(
+                        key = "recently-played",
+                        intents = getRecentlyPlayedUseCase(Unit).map {
+                            SongsListIntent.RecentlyPlayedChanged(
+                                it
+                            )
+                        }
+                    )
+                )
             )
         }
 
@@ -64,11 +75,9 @@ class SongsListReducer(
             )
         }
 
-        SongsListIntent.LoadingRecentlyPlayed -> {
-            val result = getRecentlyPlayedUseCase(Unit)
-
+        is SongsListIntent.RecentlyPlayedChanged -> {
             Reduction.state(
-                LoadedRecentlyPlayed(result.data?.trackList.orEmpty())
+                LoadedRecentlyPlayed(intent.result.data?.trackList.orEmpty())
             )
         }
 

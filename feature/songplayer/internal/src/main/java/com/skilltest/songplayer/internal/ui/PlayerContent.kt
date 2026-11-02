@@ -1,26 +1,51 @@
 package com.skilltest.songplayer.internal.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.skilltest.design.R
+import com.skilltest.design.component.ActionButton
+import com.skilltest.design.component.ActionButtonDefaults
 import com.skilltest.design.component.ThumbnailImage
+import com.skilltest.design.theme.Dimens
 import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.util.PreviewBox
 import com.skilltest.design.util.ScreenPreview
@@ -36,17 +61,72 @@ internal fun MiniPlayerContent(
 ) {
     val track = state.track ?: return
     Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)) {
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onOpenSong)) {
-                Text(track.name, style = MaterialTheme.typography.titleSmall)
-                Text(track.artistName, style = MaterialTheme.typography.bodySmall)
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            val progress = if (state.durationMs > 0) {
+                (state.positionMs.toFloat() / state.durationMs).coerceIn(0f, 1f)
+            } else 0f
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .background(
+                        MaterialTheme.colorScheme.outline,
+                        RoundedCornerShape(Dimens.radius8)
+                    )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .height(4.dp)
+                        .background(
+                            MaterialTheme.colorScheme.onSurface,
+                            RoundedCornerShape(Dimens.radius8)
+                        )
+                )
             }
-            PlaybackActions(state, onIntent)
-            PlayerSeekBar(state, onIntent)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = Dimens.padding16,
+                        end = Dimens.padding16,
+                        bottom = Dimens.padding16,
+                        top = Dimens.padding8
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Dimens.padding16),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(onClick = onOpenSong),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.padding16),
+                ) {
+                    ThumbnailImage(
+                        url = track.artworkUrl,
+                        contentDescription = null,
+                        modifier = Modifier.size(Dimens.size52),
+                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = track.name,
+                            style = MaterialTheme.typography.titleSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            text = track.artistName,
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+                PlayPauseAction(state, onIntent)
+            }
         }
     }
 }
@@ -59,19 +139,46 @@ internal fun SongDetailsContent(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(Dimens.padding24),
     ) {
-        ThumbnailImage(
-            url = track.artworkUrl,
-            contentDescription = track.name,
-        )
-        Text(track.name, style = MaterialTheme.typography.headlineMedium)
-        Text(track.artistName, style = MaterialTheme.typography.titleMedium)
-        if (track.albumName.isNotBlank()) Text(track.albumName)
-        PlaybackActions(state, onIntent)
-        PlayerSeekBar(state, onIntent)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            ThumbnailImage(
+                url = track.artworkUrl,
+                contentDescription = track.name,
+                modifier = Modifier.size(Dimens.size246),
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(vertical = Dimens.padding48)
+                .weight(1f)
+        ) {
+            Text(
+                track.name, style = MaterialTheme.typography.headlineMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
+            Spacer(modifier = Modifier.height(Dimens.padding8))
+            Text(
+                track.artistName, style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
+
+            Spacer(modifier = Modifier.height(Dimens.padding24))
+
+            PlayerSeekBar(state, onIntent)
+            Spacer(modifier = Modifier.height(Dimens.padding16))
+            PlaybackActions(state, onIntent)
+        }
     }
 }
 
@@ -80,61 +187,154 @@ private fun PlaybackActions(
     state: PlayerState,
     onIntent: (PlayerIntent) -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.padding16),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        PlayPauseAction(state, onIntent, size = Dimens.size72)
+
+        val accPreviousTrack =
+            stringResource(com.skilltest.songplayer.internal.R.string.acc_previous_song)
+
         IconButton(
             onClick = { onIntent(PlayerIntent.Previous) },
             enabled = state.hasPrevious,
-            modifier = Modifier.semantics { contentDescription = "Previous track" },
+            modifier = Modifier.semantics { contentDescription = accPreviousTrack },
         ) {
-            Text("⏮")
+            Icon(
+                modifier = Modifier.size(Dimens.size36),
+                painter = painterResource(R.drawable.ic_backward),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
-        IconButton(
-            onClick = { onIntent(PlayerIntent.Backward) },
-            enabled = state.track != null,
-            modifier = Modifier.semantics { contentDescription = "Back 10 seconds" },
-        ) {
-            Text("-10s")
-        }
-        IconButton(
-            onClick = { onIntent(if (state.isPlaying) PlayerIntent.Pause else PlayerIntent.Play) },
-            enabled = state.track != null,
-            modifier = Modifier.semantics {
-                contentDescription = if (state.isPlaying) "Pause" else "Play"
-            },
-        ) {
-            Text(if (state.isPlaying) "❚❚" else "▶")
-        }
-        IconButton(
-            onClick = { onIntent(PlayerIntent.Forward) },
-            enabled = state.track != null,
-            modifier = Modifier.semantics { contentDescription = "Forward 10 seconds" },
-        ) {
-            Text("+10s")
-        }
+
+        val accNextTrack = stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song)
+
         IconButton(
             onClick = { onIntent(PlayerIntent.Next) },
             enabled = state.hasNext,
-            modifier = Modifier.semantics { contentDescription = "Next track" },
+            modifier = Modifier.semantics { contentDescription = accNextTrack },
         ) {
-            Text("⏭")
+            Icon(
+                modifier = Modifier
+                    .size(Dimens.size36)
+                    .rotate(180f),
+                painter = painterResource(R.drawable.ic_backward),
+                contentDescription = stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
 
+@Composable
+private fun PlayPauseAction(
+    state: PlayerState,
+    onIntent: (PlayerIntent) -> Unit,
+    size: Dp = Dimens.size48
+) {
+    val accessibilityText = if (state.isPlaying) {
+        stringResource(com.skilltest.songplayer.internal.R.string.acc_pause)
+    } else {
+        stringResource(com.skilltest.songplayer.internal.R.string.acc_play)
+    }
+
+    ActionButton(
+        onClick = { onIntent(if (state.isPlaying) PlayerIntent.Pause else PlayerIntent.Play) },
+        enabled = state.track != null,
+        modifier = Modifier.semantics { contentDescription = accessibilityText },
+        colors = ActionButtonDefaults.colors().copy(
+            content = MaterialTheme.colorScheme.surface,
+            container = MaterialTheme.colorScheme.tertiary,
+        ),
+        shape = CircleShape,
+        content = {
+            Icon(
+                modifier = Modifier
+                    .size(size)
+                    .padding(Dimens.padding4),
+                painter = painterResource(if (state.isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
+                contentDescription = null,
+            )
+        }
+    )
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlayerSeekBar(state: PlayerState, onIntent: (PlayerIntent) -> Unit) {
     var dragging by remember { mutableStateOf<Float?>(null) }
     val progress = if (state.durationMs > 0) {
         (state.positionMs.toFloat() / state.durationMs).coerceIn(0f, 1f)
     } else 0f
+
+    val sliderState = rememberSliderState(progress)
+    LaunchedEffect(progress, dragging) {
+        if (dragging == null) sliderState.value = progress
+    }
+
     Slider(
-        value = dragging ?: progress,
-        onValueChange = { dragging = it },
+        state = sliderState,
+        onValueChange = {
+            dragging = it
+            sliderState.value = it
+        },
         onValueChangeFinished = {
             dragging?.let { onIntent(PlayerIntent.SeekTo((it * state.durationMs).toLong())) }
             dragging = null
         },
         enabled = state.durationMs > 0,
+        thumb = {
+            Box(
+                modifier = Modifier
+                    .size(Dimens.size16)
+                    .background(
+                        color = MaterialTheme.colorScheme.onSurface,
+                        shape = CircleShape
+                    )
+            )
+        },
+        track = { sliderState ->
+            val range = sliderState.trackRange
+            val fraction = ((sliderState.value - range.start) /
+                    (range.endInclusive - range.start)).coerceIn(0f, 1f)
+
+            Box(
+                Modifier
+                    .fillMaxWidth()
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth(fraction)
+                        .align(Alignment.CenterStart)
+                        .height(Dimens.size4)
+                        .background(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            shape = RoundedCornerShape(
+                                topStart = Dimens.radius8,
+                                bottomStart = Dimens.radius8
+                            )
+                        )
+                )
+
+                Box(
+                    Modifier
+                        .fillMaxWidth(1f - fraction)
+                        .align(Alignment.CenterEnd)
+                        .height(Dimens.size4)
+                        .background(
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(
+                                topEnd = Dimens.radius8,
+                                bottomEnd = Dimens.radius8
+                            )
+                        )
+                )
+            }
+        }
     )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(formatTime(state.positionMs), style = MaterialTheme.typography.labelSmall)
@@ -150,7 +350,7 @@ private fun formatTime(milliseconds: Long): String {
 @ComponentPreview
 @Composable
 private fun MiniPlayerContentPreview() {
-    PreviewBox {
+    PreviewBox(modifier = Modifier.width(360.dp)) {
         MiniPlayerContent(
             state = PlayerState(
                 track = previewTrack,

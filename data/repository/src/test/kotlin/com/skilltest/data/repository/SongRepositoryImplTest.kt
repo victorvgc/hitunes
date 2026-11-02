@@ -6,6 +6,8 @@ import com.skilltest.domain.model.RecentlyPlayed
 import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
 import com.skilltest.domain.model.Track
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
@@ -29,7 +31,7 @@ class SongRepositoryImplTest {
 
         assertSame(local.saveResult, repository.addToRecentlyPlayed(track))
         assertSame(track, local.savedTrack)
-        assertSame(local.fetchResult, repository.getRecentlyPlayed())
+        assertSame(local.fetchResult, repository.getRecentlyPlayed().first())
         assertEquals(1, local.fetchCalls)
     }
 
@@ -54,9 +56,8 @@ class SongRepositoryImplTest {
             return saveResult
         }
 
-        override suspend fun fetchRecentlyPlayedSongs(): ResultWrapper<RecentlyPlayed> {
+        override fun fetchRecentlyPlayedSongs() = flowOf(fetchResult).also {
             fetchCalls++
-            return fetchResult
         }
     }
 
