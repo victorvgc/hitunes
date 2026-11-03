@@ -37,12 +37,26 @@ fun SongDetailsScreen(
     onBack: (() -> Unit)?,
     onMore: () -> Unit,
     showTopBar: Boolean = true,
+    carLayout: Boolean = false,
+    onAlbum: () -> Unit = {},
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     val state by viewModel.state.collectAsState()
     LaunchedEffect(track.id) {
         viewModel.onIntent(com.skilltest.songplayer.internal.viewmodel.PlayerIntent.DisableRepeat)
+    }
+    if (carLayout) {
+        CarSongDetailsContent(
+            track = state.track ?: track,
+            state = state,
+            onIntent = viewModel::onIntent,
+            onBack = onBack,
+            onAlbum = onAlbum,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
+        )
+        return
     }
     Column(modifier = Modifier.fillMaxSize()) {
         if (showTopBar) {

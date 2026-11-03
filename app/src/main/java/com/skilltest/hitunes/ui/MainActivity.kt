@@ -67,7 +67,8 @@ class MainActivity : ComponentActivity() {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val onSongPage = backStackEntry?.destination?.route
                 ?.startsWith(Route.SongDetails::class.qualifiedName.orEmpty()) == true
-            val twoPane = rememberAppLayout() == AppLayout.TwoPane
+            val appLayout = rememberAppLayout()
+            val twoPane = appLayout == AppLayout.TwoPane
 
             // The song the user picked, kept like the song page route keeps it so the side pane
             // behaves the same: skipping to another queued song doesn't count as opening it.
@@ -148,6 +149,7 @@ class MainActivity : ComponentActivity() {
                                         onNavigateToAlbum = { albumId ->
                                             navigate(Route.Album(albumId))
                                         },
+                                        carLayout = appLayout == AppLayout.Car,
                                         sharedTransitionScope = this@SharedTransitionLayout,
                                         animatedVisibilityScope = this@composable,
                                     )

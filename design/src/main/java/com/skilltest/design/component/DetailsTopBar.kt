@@ -2,8 +2,8 @@ package com.skilltest.design.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,11 +24,11 @@ fun DetailsTopBar(
     onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
     onMore: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(Dimens.size56)
             .padding(horizontal = Dimens.padding16),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Dimens.padding8),
@@ -44,10 +44,11 @@ fun DetailsTopBar(
         Text(
             text = title,
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.headlineMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
+        actions()
         if (onMore != null) {
             IconButton(onClick = onMore) {
                 Icon(

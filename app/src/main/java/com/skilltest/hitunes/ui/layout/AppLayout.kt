@@ -8,18 +8,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 
-enum class AppLayout { SinglePane, TwoPane }
+// Car: single pane like a phone, with a song page laid out for car screens.
+enum class AppLayout { SinglePane, TwoPane, Car }
 
 // Material's breakpoint: below 600dp on the short side the device is a phone.
 private const val TABLET_MIN_SMALLEST_WIDTH_DP = 600
 
 fun isPhone(smallestWidthDp: Int): Boolean = smallestWidthDp < TABLET_MIN_SMALLEST_WIDTH_DP
 
-// Tablets in landscape and car screens show the song list next to the playing song.
+// Tablets in landscape show the song list next to the playing song.
 // Phones always use the single pane with the mini player; they are locked to portrait.
+// Car screens navigate like phones but get their own song page.
 fun appLayoutFor(widthDp: Int, heightDp: Int, smallestWidthDp: Int, isCar: Boolean): AppLayout =
     when {
-        isCar -> AppLayout.TwoPane
+        isCar -> AppLayout.Car
         !isPhone(smallestWidthDp) && widthDp > heightDp -> AppLayout.TwoPane
         else -> AppLayout.SinglePane
     }

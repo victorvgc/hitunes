@@ -32,6 +32,8 @@ fun SongDetailsPage(
     onNavigateToAlbum: (String) -> Unit,
     // The side pane drops the top bar; its menu sits next to the cover instead.
     showTopBar: Boolean = true,
+    // Car screens: a short page whose Album button opens the album directly.
+    carLayout: Boolean = false,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
@@ -44,6 +46,8 @@ fun SongDetailsPage(
         onBack = onBack,
         onMore = { showAlbumMenu = true },
         showTopBar = showTopBar,
+        carLayout = carLayout,
+        onAlbum = { onNavigateToAlbum(currentTrack.albumId) },
         sharedTransitionScope = sharedTransitionScope,
         animatedVisibilityScope = animatedVisibilityScope,
     )

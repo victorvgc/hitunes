@@ -27,9 +27,9 @@ class AppLayoutTest {
     }
 
     @Test
-    fun `car screens use two panes regardless of orientation`() {
-        assertEquals(AppLayout.TwoPane, layout(widthDp = 768, heightDp = 1024, isCar = true))
-        assertEquals(AppLayout.TwoPane, layout(widthDp = 1408, heightDp = 792, isCar = true))
+    fun `car screens use the car layout regardless of size`() {
+        assertEquals(AppLayout.Car, layout(widthDp = 768, heightDp = 1024, isCar = true))
+        assertEquals(AppLayout.Car, layout(widthDp = 1408, heightDp = 792, isCar = true))
     }
 
     @Test
