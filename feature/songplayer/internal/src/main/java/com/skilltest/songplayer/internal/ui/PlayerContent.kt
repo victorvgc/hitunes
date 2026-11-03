@@ -3,9 +3,11 @@ package com.skilltest.songplayer.internal.ui
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +44,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.skilltest.design.R
 import com.skilltest.design.component.ActionButton
 import com.skilltest.design.component.ActionButtonDefaults
@@ -125,7 +128,7 @@ internal fun MiniPlayerContent(
                             text = track.name,
                             style = MaterialTheme.typography.titleSmall,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.basicMarquee(),
                         )
                         Text(
                             text = track.artistName,
@@ -148,58 +151,85 @@ internal fun SongDetailsContent(
     state: PlayerState,
     onIntent: (PlayerIntent) -> Unit,
     modifier: Modifier = Modifier,
+    // Shows the menu on the cover's row, for screens without a top bar.
+    onMore: (() -> Unit)? = null,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(Dimens.padding24),
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            ThumbnailImage(
-                url = track.artworkUrl,
-                contentDescription = track.name,
-                modifier = Modifier.sharedImageTransition(
-                    size = Dimens.size246,
-                    trackId = track.id,
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope,
-                ),
-            )
-        }
-
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        // Short screens (landscape, side pane) can't split their height between cover and
+        // controls, so the two stack at their natural size and scroll instead.
+        val splitHeight = maxHeight >= MinSplitHeight
         Column(
             modifier = Modifier
-                .padding(vertical = Dimens.padding48)
-                .weight(1f)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(Dimens.padding24),
         ) {
-            Text(
-                track.name, style = MaterialTheme.typography.headlineMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            )
-            Spacer(modifier = Modifier.height(Dimens.padding8))
-            Text(
-                track.artistName, style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(if (splitHeight) Modifier.weight(1f) else Modifier),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    ThumbnailImage(
+                        url = track.artworkUrl,
+                        contentDescription = track.name,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .sharedImageTransition(
+                                size = Dimens.size246,
+                                trackId = track.id,
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
+                            ),
+                    )
+                    if (onMore != null) {
+                        IconButton(
+                            onClick = onMore,
+                            modifier = Modifier.align(Alignment.TopEnd),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_more_actions),
+                                contentDescription = stringResource(R.string.more_options),
+                            )
+                        }
+                    }
+                }
+            }
 
-            Spacer(modifier = Modifier.height(Dimens.padding24))
+            Column(
+                modifier = Modifier
+                    .padding(vertical = if (splitHeight) Dimens.padding48 else Dimens.padding24)
+                    .then(if (splitHeight) Modifier.weight(1f) else Modifier)
+            ) {
+                Text(
+                    track.name,
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    maxLines = 1,
+                    modifier = Modifier.basicMarquee(),
+                )
+                Spacer(modifier = Modifier.height(Dimens.padding8))
+                Text(
+                    track.artistName, style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                )
 
-            PlayerSeekBar(state, onIntent)
-            Spacer(modifier = Modifier.height(Dimens.padding16))
-            PlaybackActions(state, onIntent)
+                Spacer(modifier = Modifier.height(Dimens.padding24))
+
+                PlayerSeekBar(state, onIntent)
+                Spacer(modifier = Modifier.height(Dimens.padding16))
+                PlaybackActions(state, onIntent)
+            }
         }
     }
 }
+
+private val MinSplitHeight = 720.dp
 
 @Composable
 private fun PlaybackActions(
@@ -422,11 +452,7 @@ private fun MiniPlayerContentPreview() {
 @ScreenPreview
 @Composable
 private fun SongDetailsContentPreview() {
-    PreviewBox(
-        modifier = Modifier
-            .width(Dimens.size411)
-            .height(Dimens.size891)
-    ) {
+    PreviewBox(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             DetailsTopBar(title = previewTrack.name, onBack = {}, onMore = {})
             SongDetailsContent(

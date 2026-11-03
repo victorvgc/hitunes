@@ -27,8 +27,11 @@ fun MiniPlayerPage(
 fun SongDetailsPage(
     track: Track,
     viewModel: PlayerViewModel,
-    onBack: () -> Unit,
+    // Null hides the back arrow, e.g. when the page is a side pane next to the song list.
+    onBack: (() -> Unit)?,
     onNavigateToAlbum: (String) -> Unit,
+    // The side pane drops the top bar; its menu sits next to the cover instead.
+    showTopBar: Boolean = true,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
@@ -40,6 +43,7 @@ fun SongDetailsPage(
         viewModel = viewModel,
         onBack = onBack,
         onMore = { showAlbumMenu = true },
+        showTopBar = showTopBar,
         sharedTransitionScope = sharedTransitionScope,
         animatedVisibilityScope = animatedVisibilityScope,
     )

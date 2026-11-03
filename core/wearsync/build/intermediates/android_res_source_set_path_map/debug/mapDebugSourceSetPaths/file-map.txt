@@ -1,0 +1,9 @@
+com.skilltest.core.wearsync-pngs-0 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/generated/res/pngs/debug
+com.skilltest.core.wearsync-updated_navigation_xml-1 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/generated/updated_navigation_xml/debug
+com.skilltest.core.wearsync-mergeDebugResources-2 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.skilltest.core.wearsync-mergeDebugResources-3 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.skilltest.core.wearsync-debug-4 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/intermediates/merged_res/debug/mergeDebugResources
+com.skilltest.core.wearsync-debug-5 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/intermediates/packaged_res/debug/packageDebugResources
+com.skilltest.core.wearsync-debug-6 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/src/debug/res
+com.skilltest.core.wearsync-main-7 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/src/main/res
+gradleHome-0 /Users/carvalho/.gradle

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -90,11 +90,27 @@ private fun AlbumDetailsContent(
     modifier: Modifier = Modifier,
 ) {
     Timber.d("VICTOR: ${album.albumName}")
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(Dimens.padding24)
+    // Cover and titles scroll with the tracks so landscape screens, short on height,
+    // can still reach every track.
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(Dimens.padding24),
+        verticalArrangement = Arrangement.spacedBy(Dimens.padding16),
     ) {
+        item(key = "album-header") {
+            AlbumHeader(album)
+        }
+        items(album.trackList) { track ->
+            TrackItem(track) {
+                onIntent(AlbumComponentIntent.OnClickTrack(track))
+            }
+        }
+    }
+}
+
+@Composable
+private fun AlbumHeader(album: UiAlbum) {
+    Column(modifier = Modifier.padding(bottom = Dimens.padding48 - Dimens.padding16)) {
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -127,21 +143,6 @@ private fun AlbumDetailsContent(
                 color = MaterialTheme.colorScheme.onSurface,
             )
         )
-
-        Spacer(modifier = Modifier.height(Dimens.padding48))
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Dimens.padding16),
-        ) {
-            items(album.trackList) { track ->
-                TrackItem(track) {
-                    onIntent(AlbumComponentIntent.OnClickTrack(track))
-                }
-            }
-        }
     }
 }
 
@@ -188,9 +189,7 @@ private fun TrackItem(
 @ScreenPreview
 @Composable
 private fun AlbumDetailsPreview() {
-    PreviewBox(modifier = Modifier
-        .width(Dimens.size411)
-        .height(Dimens.size891)) {
+    PreviewBox(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             DetailsTopBar(title = "Thriller", onBack = {})
             AlbumDetailsContent(

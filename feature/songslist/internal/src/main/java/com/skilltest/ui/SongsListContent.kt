@@ -11,6 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -30,10 +32,18 @@ fun SongsListContent(
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     val showRecentlyPlayed = !state.isSearching || state.searchTerm.isEmpty()
+    val configuration = LocalConfiguration.current
+    // Landscape is short on height, so the big title gives way to the list as it scrolls.
+    val collapsibleTitle = configuration.screenWidthDp > configuration.screenHeightDp
+    val titleState = rememberCollapsingTitleState(range = Dimens.size56)
 
     Scaffold { innerPadding ->
         Column(
             modifier = modifier
+                .then(
+                    if (collapsibleTitle) Modifier.nestedScroll(titleState.nestedScrollConnection)
+                    else Modifier
+                )
                 .padding(innerPadding)
                 .padding(
                     horizontal = Dimens.padding24,
@@ -43,7 +53,8 @@ fun SongsListContent(
         ) {
             SongsListHeader(
                 state = state,
-                onIntent = onIntent
+                onIntent = onIntent,
+                titleCollapseFraction = if (collapsibleTitle) titleState.fraction else 0f,
             )
 
             if (showRecentlyPlayed) {

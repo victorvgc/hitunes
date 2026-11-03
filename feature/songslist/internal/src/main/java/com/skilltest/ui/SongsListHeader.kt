@@ -33,6 +33,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.lerp
 import com.skilltest.design.component.ActionButton
 import com.skilltest.design.component.SearchField
 import com.skilltest.design.theme.Dimens
@@ -51,6 +52,8 @@ fun ColumnScope.SongsListHeader(
     state: SongsListState,
     onIntent: (SongsListIntent) -> Unit,
     modifier: Modifier = Modifier,
+    // 0 shows the full display-size title, 1 shrinks it to body size.
+    titleCollapseFraction: Float = 0f,
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -68,7 +71,11 @@ fun ColumnScope.SongsListHeader(
                 Text(
                     modifier = Modifier.weight(1f),
                     text = stringResource(R.string.songs_list_title),
-                    style = MaterialTheme.typography.displaySmall
+                    style = lerp(
+                        MaterialTheme.typography.displaySmall,
+                        MaterialTheme.typography.bodyLarge,
+                        titleCollapseFraction,
+                    )
                 )
 
                 AnimatedVisibility(

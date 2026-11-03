@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.skilltest.core.wearsync.test.wearsync-mergeDebugUnitTestResources-27:/values-watch-v20/values-watch-v20.xml",
+            "map": [
+                {
+                    "source": "/Users/carvalho/.gradle/caches/9.5.0/transforms/fb411bc0b684a344dda64c2b6f3b3ab8/transformed/appcompat-1.6.1/res/values-watch-v20/values-watch-v20.xml",
+                    "from": {
+                        "startLines": "2,5,8",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,214,385",
+                        "endLines": "4,7,10",
+                        "endColumns": "12,12,12",
+                        "endOffsets": "209,380,553"
+                    }
+                }
+            ]
+        }
+    ]
+}

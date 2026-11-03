@@ -5,6 +5,7 @@ object AndroidAppConfig {
 
     const val COMPILE_SDK = 37
     const val MIN_SDK = 28
+    const val WEAR_MIN_SDK = 30
     const val TARGET_SDK = 37
     const val APPLICATION_ID = "com.skilltest.hitunes"
     const val TEST_INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
