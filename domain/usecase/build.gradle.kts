@@ -4,5 +4,5 @@ plugins {
 
 dependencies {
     api(project(":domain:repository"))
-    implementation(libs.koin.core)
+    api(libs.kotlinx.coroutines.core)
 }

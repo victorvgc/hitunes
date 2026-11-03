@@ -8,6 +8,7 @@ import com.skilltest.domain.repository.SongRepository
 import com.skilltest.domain.usecase.di.useCaseModule
 import com.skilltest.ui.di.internalSongsListModule
 import com.skilltest.ui.viewmodel.SongsListReducer
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.koin.dsl.koinApplication
@@ -29,8 +30,8 @@ class SongsListModuleBindingsTest {
                             override suspend fun addToRecentlyPlayed(track: Track) =
                                 ResultWrapper.Success(Unit)
 
-                            override suspend fun getRecentlyPlayed() =
-                                ResultWrapper.Success(RecentlyPlayed(emptyList()))
+                            override fun getRecentlyPlayed() =
+                                flowOf(ResultWrapper.Success(RecentlyPlayed(emptyList())))
                         }
                     }
                 },

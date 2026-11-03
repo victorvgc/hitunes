@@ -1,5 +1,7 @@
 package com.skilltest.ui
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.skilltest.design.util.ScreenPreview
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.util.PreviewBox
+import com.skilltest.design.util.ScreenPreview
 import com.skilltest.ui.model.UiTrack
 import com.skilltest.ui.viewmodel.SongsListIntent
 import com.skilltest.ui.viewmodel.SongsListState
@@ -24,6 +26,8 @@ fun SongsListContent(
     state: SongsListState,
     onIntent: (SongsListIntent) -> Unit,
     modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     val showRecentlyPlayed = !state.isSearching || state.searchTerm.isEmpty()
 
@@ -61,7 +65,9 @@ fun SongsListContent(
                 },
                 onTrackMoreActionsClick = {
                     onIntent(SongsListIntent.OpenTrackMoreOptions(it))
-                }
+                },
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
             )
         }
     }

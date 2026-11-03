@@ -5,7 +5,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") apply false
     id("com.android.library") apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.android.roborazzi) apply false
+    id("io.github.takahirom.roborazzi") apply false
     alias(libs.plugins.secrets) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.room) apply false
     id("org.jetbrains.kotlin.jvm") apply false
 }

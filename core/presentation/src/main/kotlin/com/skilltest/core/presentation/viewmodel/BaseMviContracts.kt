@@ -1,5 +1,7 @@
 package com.skilltest.core.presentation.viewmodel
 
+import kotlinx.coroutines.flow.Flow
+
 interface BaseReducer<State : BaseUiState, Intent : BaseIntent, Effect : BaseUiEffect> {
     suspend fun reduce(previousState: State, intent: Intent): Reduction<State, Intent, Effect>
 }
@@ -7,7 +9,8 @@ interface BaseReducer<State : BaseUiState, Intent : BaseIntent, Effect : BaseUiE
 data class Reduction<State : BaseUiState, Intent : BaseIntent, Effect : BaseUiEffect>(
     val partialStateChange: PartialStateChange<State> = PartialStateChange.none(),
     val effects: List<Effect> = emptyList(),
-    val derivedIntents: List<Intent> = emptyList()
+    val derivedIntents: List<Intent> = emptyList(),
+    val subscriptions: List<IntentSubscription<Intent>> = emptyList(),
 ) {
     companion object {
         fun <State : BaseUiState, Intent : BaseIntent, Effect : BaseUiEffect> none() =
@@ -26,6 +29,11 @@ data class Reduction<State : BaseUiState, Intent : BaseIntent, Effect : BaseUiEf
         ) = Reduction<State, Intent, Effect>(partialStateChange = state)
     }
 }
+
+data class IntentSubscription<Intent : BaseIntent>(
+    val key: Any,
+    val intents: Flow<Intent>,
+)
 
 fun interface PartialStateChange<State> {
     fun reduce(previous: State): State

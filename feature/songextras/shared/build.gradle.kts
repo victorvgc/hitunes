@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
+    api(project(":domain:model"))
     implementation(project(":feature:songextras:internal"))
     implementation(project(":core:presentation"))
-    implementation(libs.koin.core)
 }

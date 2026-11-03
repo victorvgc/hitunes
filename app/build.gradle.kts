@@ -25,7 +25,6 @@ android {
             isDebuggable = true
             isMinifyEnabled = false
 
-
         }
         release {
             isMinifyEnabled = true
@@ -56,18 +55,17 @@ dependencies {
     implementation(project(":navigation"))
     implementation(project(":feature:songslist:shared"))
     implementation(project(":feature:songextras:shared"))
+    implementation(project(":feature:songplayer:shared"))
     implementation(project(":data:datasource:remote"))
     implementation(project(":data:datasource:local"))
     implementation(project(":data:repository"))
     implementation(project(":domain:usecase"))
 
     implementation(libs.androidx.compose.nav)
+    implementation(libs.media3.session)
     implementation(libs.serialization)
 
     implementation(libs.androidx.splash)
-
-    implementation(libs.koin)
-    implementation(libs.koin.compose)
 
     implementation(libs.retrofit.core)
     implementation(libs.okhttp.logging)

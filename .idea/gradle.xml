@@ -38,6 +38,9 @@
             <option value="$PROJECT_DIR$/feature/songextras" />
             <option value="$PROJECT_DIR$/feature/songextras/internal" />
             <option value="$PROJECT_DIR$/feature/songextras/shared" />
+            <option value="$PROJECT_DIR$/feature/songplayer" />
+            <option value="$PROJECT_DIR$/feature/songplayer/internal" />
+            <option value="$PROJECT_DIR$/feature/songplayer/shared" />
             <option value="$PROJECT_DIR$/feature/songslist" />
             <option value="$PROJECT_DIR$/feature/songslist/internal" />
             <option value="$PROJECT_DIR$/feature/songslist/shared" />

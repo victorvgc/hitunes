@@ -6,12 +6,14 @@ import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
 import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.SongRepository
+import com.skilltest.domain.usecase.GetRecentlyPlayedUseCase
 import com.skilltest.domain.usecase.SearchSongsByTermUseCase
 import com.skilltest.domain.usecase.ShouldShowSearchLoadingUseCase
 import com.skilltest.ui.viewmodel.SongsListEffect
 import com.skilltest.ui.viewmodel.SongsListIntent
 import com.skilltest.ui.viewmodel.SongsListReducer
 import com.skilltest.ui.viewmodel.SongsListState
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -23,6 +25,7 @@ class SongsListReducerTest {
     private val reducer = SongsListReducer(
         SearchSongsByTermUseCase(repository),
         ShouldShowSearchLoadingUseCase(),
+        GetRecentlyPlayedUseCase(repository),
     )
 
     @Test
@@ -42,12 +45,13 @@ class SongsListReducerTest {
     }
 
     @Test
-    fun loadingRecentTracksSetsFlagAndQueuesFollowUpIntent() = runTest {
+    fun loadingRecentTracksSetsFlagAndSubscribesToUpdates() = runTest {
         val state = SongsListState()
         val reduction = reducer.reduce(state, SongsListIntent.LoadRecentlyPlayed)
 
         assertTrue(reduction.partialStateChange.reduce(state).isLoadingRecentlyPlayed)
-        assertEquals(listOf(SongsListIntent.LoadingRecentlyPlayed), reduction.derivedIntents)
+        assertEquals(1, reduction.subscriptions.size)
+        assertEquals("recently-played", reduction.subscriptions.single().key)
     }
 
     @Test
@@ -156,19 +160,38 @@ class SongsListReducerTest {
 
     @Test
     fun trackDetailsProducesNavigationEffect() = runTest {
-        val reduction = reducer.reduce(SongsListState(), SongsListIntent.OpenTrackDetails("track-1"))
-        assertEquals(SongsListEffect.NavigateToTrackDetails("track-1"), reduction.effects.single())
+        val uiTrack = track.toUiTrack()
+        val reduction = reducer.reduce(SongsListState(), SongsListIntent.OpenTrackDetails(uiTrack))
+        assertEquals(SongsListEffect.NavigateToTrackDetails(uiTrack), reduction.effects.single())
     }
 
     @Test
     fun recentTracksLoadIntoStateWithAlbumAndArtistIds() = runTest {
+        repository.recentlyPlayedResult = ResultWrapper.Success(RecentlyPlayed(listOf(track)))
         val state = SongsListState(isLoadingRecentlyPlayed = true)
-        val next = reducer.reduce(state, SongsListIntent.LoadingRecentlyPlayed)
+        val next = reducer.reduce(
+            state,
+            SongsListIntent.RecentlyPlayedChanged(repository.recentlyPlayedResult)
+        )
             .partialStateChange.reduce(state)
 
-        assertEquals(10, next.recentlyPlayed.size)
-        assertEquals("album-1", next.recentlyPlayed.first().albumId)
-        assertEquals("artist-1", next.recentlyPlayed.first().artistId)
+        assertEquals(listOf("track-1"), next.recentlyPlayed.map { it.id })
+        assertEquals("album-2", next.recentlyPlayed.first().albumId)
+        assertEquals("artist-3", next.recentlyPlayed.first().artistId)
+        assertFalse(next.isLoadingRecentlyPlayed)
+    }
+
+    @Test
+    fun failedRecentTracksLoadClearsLoadingWithNoTracks() = runTest {
+        repository.recentlyPlayedResult = ResultWrapper.Error(Failure(msg = "disk error"))
+        val state = SongsListState(isLoadingRecentlyPlayed = true)
+        val next = reducer.reduce(
+            state,
+            SongsListIntent.RecentlyPlayedChanged(repository.recentlyPlayedResult)
+        )
+            .partialStateChange.reduce(state)
+
+        assertTrue(next.recentlyPlayed.isEmpty())
         assertFalse(next.isLoadingRecentlyPlayed)
     }
 
@@ -181,8 +204,10 @@ class SongsListReducerTest {
             return searchResult
         }
 
+        var recentlyPlayedResult: ResultWrapper<RecentlyPlayed> = ResultWrapper.Success(RecentlyPlayed(emptyList()))
+
         override suspend fun addToRecentlyPlayed(track: Track) = ResultWrapper.Success(Unit)
-        override suspend fun getRecentlyPlayed() = ResultWrapper.Success(RecentlyPlayed(emptyList()))
+        override fun getRecentlyPlayed() = flowOf(recentlyPlayedResult)
     }
 
     private fun Track.toUiTrack() = com.skilltest.ui.model.UiTrack(

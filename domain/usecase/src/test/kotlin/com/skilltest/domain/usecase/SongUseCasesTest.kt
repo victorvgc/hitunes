@@ -6,6 +6,8 @@ import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
 import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.SongRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
@@ -62,18 +64,44 @@ class SongUseCasesTest {
         )
     }
 
+    @Test
+    fun getRecentlyPlayedPreservesRepositoryResult() = runTest {
+        val repository = RecordingRepository(ResultWrapper.Success(SearchResult(emptyList())))
+
+        val result = GetRecentlyPlayedUseCase(repository)(Unit).first()
+
+        assertSame(repository.recentlyPlayedResult, result)
+    }
+
+    @Test
+    fun addToRecentlyPlayedPassesTrackToRepository() = runTest {
+        val repository = RecordingRepository(ResultWrapper.Success(SearchResult(emptyList())))
+
+        val result = AddToRecentlyPlayedUseCase(repository)(AddToRecentlyPlayedUseCase.Request(track))
+
+        assertSame(track, repository.lastAddedTrack)
+        assertSame(repository.addResult, result)
+    }
+
     private class RecordingRepository(
         private val searchResult: ResultWrapper<SearchResult>,
     ) : SongRepository {
         var lastSearchTerm: String? = null
+        var lastAddedTrack: Track? = null
+        val addResult = ResultWrapper.Error<Unit>(Failure(msg = "disk full"))
+        val recentlyPlayedResult = ResultWrapper.Success(RecentlyPlayed(listOf(track)))
 
         override suspend fun searchSongsByTerm(term: String): ResultWrapper<SearchResult> {
             lastSearchTerm = term
             return searchResult
         }
 
-        override suspend fun addToRecentlyPlayed(track: Track) = ResultWrapper.Success(Unit)
-        override suspend fun getRecentlyPlayed() = ResultWrapper.Success(RecentlyPlayed(emptyList()))
+        override suspend fun addToRecentlyPlayed(track: Track): ResultWrapper<Unit> {
+            lastAddedTrack = track
+            return addResult
+        }
+
+        override fun getRecentlyPlayed() = flowOf(recentlyPlayedResult)
     }
 
     private companion object {

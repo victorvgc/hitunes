@@ -10,6 +10,8 @@ data class UiTrack(
     val isExplicit: Boolean,
     val artistId: String = "",
     val albumId: String = "",
+    val streamUrl: String = "",
+    val albumName: String = "",
 ) {
     companion object {
         fun Track.toUi(): UiTrack = UiTrack(
@@ -20,6 +22,20 @@ data class UiTrack(
             isExplicit = isExplicit,
             artistId = artistId,
             albumId = albumId,
+            streamUrl = streamUrl,
+            albumName = albumName,
+        )
+
+        fun UiTrack.toDomain(): Track = Track(
+            id = id,
+            name = name,
+            artistName = artistName,
+            albumName = albumName,
+            artworkUrl = artwork,
+            isExplicit = isExplicit,
+            artistId = artistId,
+            albumId = albumId,
+            streamUrl = streamUrl,
         )
     }
 }

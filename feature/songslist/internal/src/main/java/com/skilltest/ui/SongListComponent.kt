@@ -1,12 +1,13 @@
 package com.skilltest.ui
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.skilltest.design.component.ActionButton
 import com.skilltest.design.component.ActionButtonDefaults
 import com.skilltest.design.component.SkeletonBox
@@ -26,6 +26,7 @@ import com.skilltest.design.component.ThumbnailImage
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.util.PreviewBox
+import com.skilltest.design.util.sharedImageTransition
 import com.skilltest.ui.model.UiTrack
 import com.skilltest.design.R as designR
 
@@ -37,8 +38,10 @@ internal fun SongListComponent(
     isLoading: Boolean,
     recentlyPlayed: List<UiTrack>,
     searchResults: List<UiTrack>,
-    onTrackClick: (String) -> Unit,
+    onTrackClick: (UiTrack) -> Unit,
     onTrackMoreActionsClick: (UiTrack) -> Unit,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     val trackList = if (isSearching) {
         searchResults
@@ -63,11 +66,13 @@ internal fun SongListComponent(
                 TrackItem(
                     track = track,
                     onClick = {
-                        onTrackClick(track.id)
+                        onTrackClick(track)
                     },
                     onMoreClick = {
                         onTrackMoreActionsClick(track)
-                    }
+                    },
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                 )
             }
         }
@@ -79,6 +84,8 @@ private fun TrackItem(
     track: UiTrack,
     onClick: () -> Unit,
     onMoreClick: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     Row(
         modifier = Modifier
@@ -90,7 +97,12 @@ private fun TrackItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ThumbnailImage(
-            modifier = Modifier.size(Dimens.size52),
+            modifier = Modifier.sharedImageTransition(
+                size = Dimens.size52,
+                trackId = track.id,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+            ),
             url = track.artwork,
             contentDescription = null
         )
@@ -118,7 +130,7 @@ private fun TrackItem(
             content = {
                 Icon(
                     painter = painterResource(designR.drawable.ic_more_actions),
-                    contentDescription = stringResource(com.skilltest.ui.R.string.acc_more_actions),
+                    contentDescription = stringResource(R.string.acc_more_actions),
                 )
             },
             onClick = onMoreClick
@@ -129,7 +141,10 @@ private fun TrackItem(
 @ComponentPreview
 @Composable
 private fun SongListComponentPreview() {
-    PreviewBox(modifier = Modifier.width(320.dp).height(80.dp)) {
+    PreviewBox(modifier = Modifier
+        .width(Dimens.size320)
+        .height(Dimens.size80)
+    ) {
         SongListComponent(
             isSearching = false,
             isLoading = false,

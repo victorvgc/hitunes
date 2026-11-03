@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.skilltest.design.component.SearchField
+import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,9 +54,9 @@ class DesignScreenshotTest {
         HiTunesTheme(darkTheme = darkTheme) {
             Column(
                 modifier = Modifier
-                    .width(360.dp)
+                    .width(Dimens.size360)
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp),
+                    .padding(Dimens.padding16),
             ) {
                 content()
             }

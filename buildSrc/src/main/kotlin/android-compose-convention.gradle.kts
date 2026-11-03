@@ -3,6 +3,11 @@ import com.android.build.api.dsl.LibraryExtension
 
 plugins {
     id("org.jetbrains.kotlin.plugin.compose")
+    id("io.github.takahirom.roborazzi")
+}
+
+roborazzi {
+    outputDir.set(file("src/test/snapshots"))
 }
 
 // Compose defaults can be used by either an application or a library.
@@ -39,4 +44,6 @@ dependencies {
         versionCatalog.findLibrary("androidx-compose-ui-test-manifest").get()
     )
     add("debugImplementation", versionCatalog.findLibrary("androidx-compose-ui-tooling").get())
+
+    add("implementation", versionCatalog.findLibrary("koin-compose").get())
 }

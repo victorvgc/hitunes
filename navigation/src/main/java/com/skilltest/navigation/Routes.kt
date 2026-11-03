@@ -1,5 +1,6 @@
 package com.skilltest.navigation
 
+import com.skilltest.domain.model.Track
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,7 +10,14 @@ sealed interface Route {
     data object SongsList : Route
 
     @Serializable
-    data object SongDetails : Route
+    data class SongDetails(val track: String) : Route {
+        fun toTrack(): Track = SongNavigationTrack.decode(track).toTrack()
+
+        companion object {
+            fun from(track: Track): SongDetails =
+                SongDetails(SongNavigationTrack.from(track).encode())
+        }
+    }
 
     @Serializable
     data class Album(

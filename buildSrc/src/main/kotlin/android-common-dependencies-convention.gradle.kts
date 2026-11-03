@@ -9,4 +9,7 @@ dependencies {
     add("testImplementation", versionCatalog.findLibrary("kotlinx-coroutines-test").get())
     add("androidTestImplementation", versionCatalog.findLibrary("androidx-junit").get())
     add("androidTestImplementation", versionCatalog.findLibrary("androidx-espresso-core").get())
+
+    add("implementation", versionCatalog.findLibrary("koin").get())
+    add("implementation", versionCatalog.findLibrary("koin-core").get())
 }

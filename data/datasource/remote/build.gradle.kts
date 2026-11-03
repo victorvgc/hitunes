@@ -15,7 +15,6 @@ secrets {
 
 dependencies {
     implementation(project(":data:datasource"))
-    implementation(libs.koin.core)
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gson)
 }

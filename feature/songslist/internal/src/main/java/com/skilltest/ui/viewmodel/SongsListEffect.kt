@@ -6,7 +6,7 @@ import com.skilltest.ui.model.UiTrack
 sealed class SongsListEffect(
     name: String,
 ) : BaseUiEffect(name) {
-    data class NavigateToTrackDetails(val id: String) :
+    data class NavigateToTrackDetails(val track: UiTrack) :
         SongsListEffect(name = "NavigateToTrackDetails")
 
     data class NavigateToTrackOptions(val track: UiTrack) :

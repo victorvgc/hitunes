@@ -15,15 +15,37 @@ data class UiAlbum(
         val trackName: String,
         val artistName: String,
         val artwork: String,
+        val albumId: String = "",
+        val albumName: String = "",
+        val artistId: String = "",
+        val streamUrl: String = "",
+        val isExplicit: Boolean = false,
     ) {
         companion object {
             fun Track.toUI() = UiTrack(
                 trackId = id,
                 trackName = name,
                 artistName = artistName,
-                artwork = artworkUrl
+                artwork = artworkUrl,
+                albumId = albumId,
+                albumName = albumName,
+                artistId = artistId,
+                streamUrl = streamUrl,
+                isExplicit = isExplicit,
             )
         }
+
+        fun toDomain() = Track(
+            id = trackId,
+            name = trackName,
+            artistName = artistName,
+            albumName = albumName,
+            artworkUrl = artwork,
+            isExplicit = isExplicit,
+            artistId = artistId,
+            albumId = albumId,
+            streamUrl = streamUrl,
+        )
     }
 
     companion object {

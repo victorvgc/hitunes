@@ -9,4 +9,5 @@ data class Track(
     val isExplicit: Boolean,
     val artistId: String = "",
     val albumId: String = "",
+    val streamUrl: String = "",
 )

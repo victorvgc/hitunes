@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.skilltest.core.presentation.util.DefaultDispatcherProvider
 import com.skilltest.core.presentation.util.DispatcherProvider
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,6 +40,7 @@ abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: Bas
         capacity = 64,
         onBufferOverflow = BufferOverflow.SUSPEND
     )
+    private val subscriptions = mutableMapOf<Any, Job>()
 
     init {
         viewModelScope.launch(dispatcherProvider.main) {
@@ -95,6 +97,13 @@ abstract class BaseViewModel<State: BaseUiState, Intent: BaseIntent, Effect: Bas
 
         reduction.derivedIntents.forEach { derivedIntent ->
             onIntent(derivedIntent)
+        }
+
+        reduction.subscriptions.forEach { subscription ->
+            subscriptions.remove(subscription.key)?.cancel()
+            subscriptions[subscription.key] = viewModelScope.launch(dispatcherProvider.main) {
+                subscription.intents.collect(::onIntent)
+            }
         }
     }
 
