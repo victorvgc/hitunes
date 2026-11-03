@@ -300,7 +300,7 @@ private fun PlayPauseAction(
         enabled = state.track != null,
         modifier = Modifier.semantics { contentDescription = accessibilityText },
         colors = ActionButtonDefaults.colors().copy(
-            content = MaterialTheme.colorScheme.surface,
+            content = MaterialTheme.colorScheme.onTertiary,
             container = MaterialTheme.colorScheme.tertiary,
         ),
         shape = CircleShape,
