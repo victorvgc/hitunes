@@ -21,7 +21,7 @@ import com.skilltest.design.theme.Dimens
 @Composable
 fun DetailsTopBar(
     title: String,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
     onMore: (() -> Unit)? = null,
 ) {
@@ -33,11 +33,13 @@ fun DetailsTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Dimens.padding8),
     ) {
-        IconButton(onClick = onBack) {
-            Icon(
-                painter = painterResource(R.drawable.ic_arrow_back),
-                contentDescription = stringResource(R.string.navigate_back),
-            )
+        if (onBack != null) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_back),
+                    contentDescription = stringResource(R.string.navigate_back),
+                )
+            }
         }
         Text(
             text = title,

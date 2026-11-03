@@ -1,10 +1,14 @@
 package com.skilltest.songplayer.internal
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
@@ -66,6 +70,45 @@ class PlayerScreenshotTest {
                             hasPrevious = true,
                         ),
                         onIntent = {},
+                    )
+                }
+            }
+        }
+    }
+
+    // Right half of a tablet in landscape (1280x800): no top bar, menu on the cover row.
+    @Test
+    @Config(qualifiers = "w1280dp-h800dp")
+    fun songDetailsTabletLandscapePane() {
+        captureSongDetailsPane(width = 640.dp, height = 800.dp)
+    }
+
+    // Right half of an Android Automotive screen (1024x768): short enough to stack and scroll.
+    @Test
+    @Config(qualifiers = "w1024dp-h768dp")
+    fun songDetailsAutoPane() {
+        captureSongDetailsPane(width = 512.dp, height = 768.dp)
+    }
+
+    private fun captureSongDetailsPane(width: Dp, height: Dp) {
+        captureRoboImage {
+            HiTunesTheme(darkTheme = false) {
+                Box(
+                    modifier = Modifier
+                        .size(width, height)
+                        .background(MaterialTheme.colorScheme.background),
+                ) {
+                    SongDetailsContent(
+                        track = track,
+                        state = PlayerState(
+                            track = track,
+                            positionMs = 83_000,
+                            durationMs = 357_000,
+                            hasNext = true,
+                            hasPrevious = true,
+                        ),
+                        onIntent = {},
+                        onMore = {},
                     )
                 }
             }

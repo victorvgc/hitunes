@@ -58,6 +58,17 @@ class AlbumScreenshotTest {
 
     @Test
     fun albumDetails() {
+        captureAlbumDetails()
+    }
+
+    // Tablet landscape: header and tracks share one scrolling list.
+    @Test
+    @Config(qualifiers = "w1280dp-h800dp")
+    fun albumDetailsTabletLandscape() {
+        captureAlbumDetails()
+    }
+
+    private fun captureAlbumDetails() {
         val viewModel = AlbumViewModel(
             AlbumReducer(LoadAlbumDetailsUseCase(object : AlbumRepository {
                 override suspend fun loadAlbum(albumId: String): ResultWrapper<Album> =

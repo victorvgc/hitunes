@@ -34,8 +34,9 @@ fun MiniPlayerScreen(
 fun SongDetailsScreen(
     track: Track,
     viewModel: PlayerViewModel,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)?,
     onMore: () -> Unit,
+    showTopBar: Boolean = true,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
@@ -44,16 +45,20 @@ fun SongDetailsScreen(
         viewModel.onIntent(com.skilltest.songplayer.internal.viewmodel.PlayerIntent.DisableRepeat)
     }
     Column(modifier = Modifier.fillMaxSize()) {
-        DetailsTopBar(
-            title = (state.track ?: track).name,
-            onBack = onBack,
-            onMore = onMore,
-        )
+        if (showTopBar) {
+            DetailsTopBar(
+                title = (state.track ?: track).name,
+                onBack = onBack,
+                onMore = onMore,
+            )
+        }
         SongDetailsContent(
             track = state.track ?: track,
             state = state,
             onIntent = viewModel::onIntent,
             modifier = Modifier.weight(1f),
+            // Without the top bar the menu moves next to the cover.
+            onMore = if (showTopBar) null else onMore,
             sharedTransitionScope = sharedTransitionScope,
             animatedVisibilityScope = animatedVisibilityScope,
         )

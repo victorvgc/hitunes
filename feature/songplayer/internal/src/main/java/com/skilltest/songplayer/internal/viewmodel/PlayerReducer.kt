@@ -1,15 +1,13 @@
 package com.skilltest.songplayer.internal.viewmodel
 
-import android.net.Uri
 import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import com.skilltest.core.presentation.viewmodel.BaseReducer
 import com.skilltest.core.presentation.viewmodel.Reduction
 import com.skilltest.domain.model.Track
 import com.skilltest.domain.usecase.AddToRecentlyPlayedUseCase
+import com.skilltest.songplayer.internal.media.toMediaItem
 
 class PlayerReducer(
     private val addToRecentlyPlayedUseCase: AddToRecentlyPlayedUseCase,
@@ -117,20 +115,7 @@ class PlayerReducer(
         if (track.streamUrl.isBlank()) return
         val queue = request.queue.filter { it.streamUrl.isNotBlank() }.ifEmpty { listOf(track) }
         currentQueue = queue
-        val items = queue.map { song ->
-            val metadata = MediaMetadata.Builder()
-                .setTitle(song.name)
-                .setArtist(song.artistName)
-                .apply {
-                    if (song.artworkUrl.isNotBlank()) setArtworkUri(Uri.parse(song.artworkUrl))
-                }
-                .build()
-            MediaItem.Builder()
-                .setMediaId(song.id)
-                .setUri(song.streamUrl)
-                .setMediaMetadata(metadata)
-                .build()
-        }
+        val items = queue.map { it.toMediaItem() }
         player.setMediaItems(items, queue.indexOfFirst { it.id == track.id }.coerceAtLeast(0), 0L)
         player.prepare()
         player.play()

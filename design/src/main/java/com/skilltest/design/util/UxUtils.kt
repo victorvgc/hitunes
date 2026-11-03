@@ -18,7 +18,8 @@ fun Modifier.sharedImageTransition(
         return this.size(size)
     }
     return with(sharedTransitionScope) {
-        Modifier
+        // Chain onto `this` so modifiers set before it (e.g. align) are kept.
+        this@sharedImageTransition
             .sharedElement(
                 rememberSharedContentState(key = "player-artwork-$trackId"),
                 animatedVisibilityScope = animatedVisibilityScope,

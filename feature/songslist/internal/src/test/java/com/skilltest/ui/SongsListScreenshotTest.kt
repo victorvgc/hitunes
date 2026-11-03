@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
@@ -61,6 +62,38 @@ class SongsListScreenshotTest {
                         searchResults = emptyList(),
                         onTrackClick = {},
                         onTrackMoreActionsClick = {},
+                    )
+                }
+            }
+        }
+    }
+
+    // Tablet landscape: the title starts at display size...
+    @Test
+    @Config(qualifiers = "w640dp-h800dp")
+    fun expandedTitleHeader() {
+        captureHeader(titleCollapseFraction = 0f)
+    }
+
+    // ...and shrinks to body size once the list scrolls.
+    @Test
+    @Config(qualifiers = "w640dp-h800dp")
+    fun collapsedTitleHeader() {
+        captureHeader(titleCollapseFraction = 1f)
+    }
+
+    private fun captureHeader(titleCollapseFraction: Float) {
+        captureRoboImage {
+            HiTunesTheme(darkTheme = false) {
+                Column(
+                    modifier = Modifier
+                        .width(640.dp)
+                        .background(MaterialTheme.colorScheme.background),
+                ) {
+                    SongsListHeader(
+                        state = SongsListState(),
+                        onIntent = {},
+                        titleCollapseFraction = titleCollapseFraction,
                     )
                 }
             }
