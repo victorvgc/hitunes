@@ -1,54 +1,72 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
+    id("com.android.application")
+    id("android-common-dependencies-convention")
+    id("android-compose-convention")
+    alias(libs.plugins.secrets)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.skilltest.hitunes"
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk = AndroidAppConfig.COMPILE_SDK
 
     defaultConfig {
-        applicationId = "com.skilltest.hitunes"
-        minSdk = 28
-        targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = AndroidAppConfig.APPLICATION_ID
+        minSdk = AndroidAppConfig.MIN_SDK
+        targetSdk = AndroidAppConfig.TARGET_SDK
+        versionCode = AndroidAppConfig.VERSION_CODE
+        versionName = AndroidAppConfig.VERSION_NAME
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = AndroidAppConfig.TEST_INSTRUMENTATION_RUNNER
     }
 
     buildTypes {
+        debug {
+            isDebuggable = true
+            isMinifyEnabled = false
+
+        }
         release {
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = true
+            isShrinkResources = true
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = AndroidAppConfig.JAVA_VERSION
+        targetCompatibility = AndroidAppConfig.JAVA_VERSION
     }
     buildFeatures {
-        compose = true
+        buildConfig = true
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 }
 
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "secrets.defaults.properties"
+}
+
 dependencies {
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(project(":design"))
+    implementation(project(":navigation"))
+    implementation(project(":feature:songslist:shared"))
+    implementation(project(":feature:songextras:shared"))
+    implementation(project(":feature:songplayer:shared"))
+    implementation(project(":data:datasource:remote"))
+    implementation(project(":data:datasource:local"))
+    implementation(project(":data:repository"))
+    implementation(project(":domain:usecase"))
+
+    implementation(libs.androidx.compose.nav)
+    implementation(libs.media3.session)
+    implementation(libs.serialization)
+
+    implementation(libs.androidx.splash)
+
+    implementation(libs.retrofit.core)
+    implementation(libs.okhttp.logging)
 }

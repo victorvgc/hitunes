@@ -1,0 +1,80 @@
+package com.skilltest.songplayer.internal.ui
+
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import com.skilltest.design.component.DetailsTopBar
+import com.skilltest.domain.model.Track
+import com.skilltest.songplayer.internal.viewmodel.PlayerViewModel
+
+@Composable
+fun MiniPlayerScreen(
+    viewModel: PlayerViewModel,
+    onOpenSong: (Track) -> Unit,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
+) {
+    val state by viewModel.state.collectAsState()
+    MiniPlayerContent(
+        state = state,
+        onIntent = viewModel::onIntent,
+        onOpenSong = { state.track?.let(onOpenSong) },
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope,
+    )
+}
+
+@Composable
+fun SongDetailsScreen(
+    track: Track,
+    viewModel: PlayerViewModel,
+    onBack: (() -> Unit)?,
+    onMore: () -> Unit,
+    showTopBar: Boolean = true,
+    carLayout: Boolean = false,
+    onAlbum: () -> Unit = {},
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
+) {
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(track.id) {
+        viewModel.onIntent(com.skilltest.songplayer.internal.viewmodel.PlayerIntent.DisableRepeat)
+    }
+    if (carLayout) {
+        CarSongDetailsContent(
+            track = state.track ?: track,
+            state = state,
+            onIntent = viewModel::onIntent,
+            onBack = onBack,
+            onAlbum = onAlbum,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
+        )
+        return
+    }
+    Column(modifier = Modifier.fillMaxSize()) {
+        if (showTopBar) {
+            DetailsTopBar(
+                title = (state.track ?: track).name,
+                onBack = onBack,
+                onMore = onMore,
+            )
+        }
+        SongDetailsContent(
+            track = state.track ?: track,
+            state = state,
+            onIntent = viewModel::onIntent,
+            modifier = Modifier.weight(1f),
+            // Without the top bar the menu moves next to the cover.
+            onMore = if (showTopBar) null else onMore,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
+        )
+    }
+}
