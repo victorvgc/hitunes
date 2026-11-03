@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
 import com.skilltest.domain.model.Track
 import com.skilltest.songplayer.internal.ui.MiniPlayerContent
@@ -27,7 +27,8 @@ class PlayerScreenshotTest {
         captureRoboImage {
             HiTunesTheme(darkTheme = false) {
                 Column(
-                    modifier = Modifier.width(411.dp)
+                    modifier = Modifier
+                        .width(Dimens.size411)
                         .background(MaterialTheme.colorScheme.background),
                 ) {
                     MiniPlayerContent(
@@ -51,7 +52,8 @@ class PlayerScreenshotTest {
         captureRoboImage {
             HiTunesTheme(darkTheme = false) {
                 Column(
-                    modifier = Modifier.width(411.dp)
+                    modifier = Modifier
+                        .width(Dimens.size411)
                         .background(MaterialTheme.colorScheme.background),
                 ) {
                     SongDetailsContent(

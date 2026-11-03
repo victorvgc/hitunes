@@ -42,10 +42,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.skilltest.design.R
 import com.skilltest.design.component.ActionButton
 import com.skilltest.design.component.ActionButtonDefaults
+import com.skilltest.design.component.DetailsTopBar
 import com.skilltest.design.component.ThumbnailImage
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.util.ComponentPreview
@@ -74,7 +74,7 @@ internal fun MiniPlayerContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(4.dp)
+                    .height(Dimens.size4)
                     .background(
                         MaterialTheme.colorScheme.outline,
                         RoundedCornerShape(Dimens.radius8)
@@ -83,7 +83,7 @@ internal fun MiniPlayerContent(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(progress)
-                        .height(4.dp)
+                        .height(Dimens.size4)
                         .background(
                             MaterialTheme.colorScheme.onSurface,
                             RoundedCornerShape(Dimens.radius8)
@@ -145,11 +145,12 @@ internal fun SongDetailsContent(
     track: Track,
     state: PlayerState,
     onIntent: (PlayerIntent) -> Unit,
+    modifier: Modifier = Modifier,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(Dimens.padding24),
@@ -225,41 +226,67 @@ private fun PlaybackActions(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Dimens.padding16),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        PlayPauseAction(state, onIntent, size = Dimens.size72)
 
-        val accPreviousTrack =
-            stringResource(com.skilltest.songplayer.internal.R.string.acc_previous_song)
-
-        IconButton(
-            onClick = { onIntent(PlayerIntent.Previous) },
-            enabled = state.hasPrevious,
-            modifier = Modifier.semantics { contentDescription = accPreviousTrack },
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Dimens.padding16),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                modifier = Modifier.size(Dimens.size36),
-                painter = painterResource(R.drawable.ic_backward),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
-            )
+            PlayPauseAction(state, onIntent, size = Dimens.size72)
+
+            val accPreviousTrack =
+                stringResource(com.skilltest.songplayer.internal.R.string.acc_previous_song)
+
+            IconButton(
+                onClick = { onIntent(PlayerIntent.Previous) },
+                enabled = state.hasPrevious,
+                modifier = Modifier.semantics { contentDescription = accPreviousTrack },
+            ) {
+                Icon(
+                    modifier = Modifier.size(Dimens.size36),
+                    painter = painterResource(R.drawable.ic_backward),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            val accNextTrack =
+                stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song)
+
+            IconButton(
+                onClick = { onIntent(PlayerIntent.Next) },
+                enabled = state.hasNext,
+                modifier = Modifier.semantics { contentDescription = accNextTrack },
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(Dimens.size36)
+                        .rotate(180f),
+                    painter = painterResource(R.drawable.ic_backward),
+                    contentDescription = stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
 
-        val accNextTrack = stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song)
+        val accRepeat =
+            stringResource(com.skilltest.songplayer.internal.R.string.acc_play_on_repeat)
 
         IconButton(
-            onClick = { onIntent(PlayerIntent.Next) },
-            enabled = state.hasNext,
-            modifier = Modifier.semantics { contentDescription = accNextTrack },
+            onClick = { onIntent(PlayerIntent.ToggleOnRepeat) },
+            enabled = state.track != null,
+            modifier = Modifier.semantics { contentDescription = accRepeat },
         ) {
             Icon(
                 modifier = Modifier
                     .size(Dimens.size36)
                     .rotate(180f),
-                painter = painterResource(R.drawable.ic_backward),
+                painter = painterResource(R.drawable.ic_play_on_repeat),
                 contentDescription = stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song),
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = if (state.isRepeating) MaterialTheme.colorScheme.tertiary
+                else MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -386,7 +413,7 @@ private fun formatTime(milliseconds: Long): String {
 @ComponentPreview
 @Composable
 private fun MiniPlayerContentPreview() {
-    PreviewBox(modifier = Modifier.width(360.dp)) {
+    PreviewBox(modifier = Modifier.width(Dimens.size360)) {
         MiniPlayerContent(
             state = PlayerState(
                 track = previewTrack,
@@ -404,18 +431,26 @@ private fun MiniPlayerContentPreview() {
 @ScreenPreview
 @Composable
 private fun SongDetailsContentPreview() {
-    PreviewBox {
-        SongDetailsContent(
-            track = previewTrack,
-            state = PlayerState(
+    PreviewBox(
+        modifier = Modifier
+            .width(Dimens.size411)
+            .height(Dimens.size891)
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            DetailsTopBar(title = previewTrack.name, onBack = {}, onMore = {})
+            SongDetailsContent(
                 track = previewTrack,
-                positionMs = 83_000,
-                durationMs = 357_000,
-                hasNext = true,
-                hasPrevious = true,
-            ),
-            onIntent = {},
-        )
+                state = PlayerState(
+                    track = previewTrack,
+                    positionMs = 83_000,
+                    durationMs = 357_000,
+                    hasNext = true,
+                    hasPrevious = true,
+                ),
+                onIntent = {},
+                modifier = Modifier.weight(1f),
+            )
+        }
     }
 }
 

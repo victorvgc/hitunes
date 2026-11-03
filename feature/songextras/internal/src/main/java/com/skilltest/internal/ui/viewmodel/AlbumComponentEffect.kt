@@ -1,6 +1,7 @@
 package com.skilltest.internal.ui.viewmodel
 
 import com.skilltest.core.presentation.viewmodel.BaseUiEffect
+import com.skilltest.domain.model.Track
 
 sealed class AlbumComponentEffect(
     name: String
@@ -14,6 +15,6 @@ sealed class AlbumComponentEffect(
     ) : AlbumComponentEffect("NavigateToAlbumDetails")
 
     data class NavigateToSongDetails(
-        val trackId: String,
+        val track: Track,
     ) : AlbumComponentEffect("NavigateToSongDetails")
 }

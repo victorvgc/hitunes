@@ -2,9 +2,11 @@ package com.skilltest.internal
 
 import com.skilltest.domain.model.Album
 import com.skilltest.domain.model.ResultWrapper
+import com.skilltest.domain.model.Track
 import com.skilltest.domain.repository.AlbumRepository
 import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase
 import com.skilltest.internal.ui.model.UiAlbum
+import com.skilltest.internal.ui.model.UiAlbum.UiTrack.Companion.toUI
 import com.skilltest.internal.ui.viewmodel.AlbumComponentEffect
 import com.skilltest.internal.ui.viewmodel.AlbumComponentIntent
 import com.skilltest.internal.ui.viewmodel.AlbumComponentState
@@ -72,6 +74,28 @@ class AlbumReducerTest {
         assertEquals("album-8", repository.requestedId)
         assertEquals(UiAlbum(albumName = "Thriller", artistName = "Michael Jackson"), loaded.album)
         assertFalse(loaded.isLoading)
+    }
+
+    @Test
+    fun selectingAlbumTrackNavigatesWithItsPlaybackDetails() = runBlocking {
+        val track = Track(
+            id = "track-5",
+            name = "Thriller",
+            artistName = "Michael Jackson",
+            albumName = "Thriller",
+            artworkUrl = "https://example.test/cover.jpg",
+            isExplicit = false,
+            artistId = "artist-7",
+            albumId = "album-8",
+            streamUrl = "https://example.test/preview.m4a",
+        )
+
+        val reduction = reducer.reduce(
+            AlbumComponentState(),
+            AlbumComponentIntent.OnClickTrack(track.toUI()),
+        )
+
+        assertEquals(AlbumComponentEffect.NavigateToSongDetails(track), reduction.effects.single())
     }
 
     private class FakeAlbumRepository(private val album: Album) : AlbumRepository {

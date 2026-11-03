@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val controller by rememberManagedMediaController()
-            val playerViewModel: PlayerViewModel = koinViewModel()
+            val playerViewModel: PlayerViewModel = koinViewModel<PlayerViewModel>()
             val playerState by playerViewModel.state.collectAsState()
             val backStackEntry by navController.currentBackStackEntryAsState()
             val onSongPage = backStackEntry?.destination?.route
@@ -91,13 +91,29 @@ class MainActivity : ComponentActivity() {
                             }
                             composable<Route.Album> { entry ->
                                 val album = entry.toRoute<Route.Album>()
-                                AlbumDetailsPage(albumId = album.albumId)
+                                AlbumDetailsPage(
+                                    albumId = album.albumId,
+                                    onBack = { navController.popBackStack() },
+                                    onTrackSelected = { track, queue ->
+                                        playerViewModel.onIntent(
+                                            PlayerIntent.PlayTrack(
+                                                track,
+                                                queue
+                                            )
+                                        )
+                                        navController.navigate(Route.SongDetails.from(track))
+                                    },
+                                )
                             }
                             composable<Route.SongDetails> { entry ->
                                 val song = entry.toRoute<Route.SongDetails>()
                                 SongDetailsPage(
                                     track = song.toTrack(),
                                     viewModel = playerViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onNavigateToAlbum = { albumId ->
+                                        navController.navigate(Route.Album(albumId))
+                                    },
                                     sharedTransitionScope = this@SharedTransitionLayout,
                                     animatedVisibilityScope = this@composable,
                                 )

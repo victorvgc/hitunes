@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.skilltest.design.component.ActionButton
 import com.skilltest.design.component.ActionButtonDefaults
 import com.skilltest.design.component.SkeletonBox
@@ -130,8 +129,9 @@ private fun TrackItem(
 @Composable
 private fun SongListComponentPreview() {
     PreviewBox(modifier = Modifier
-        .width(320.dp)
-        .height(80.dp)) {
+        .width(Dimens.size320)
+        .height(Dimens.size80)
+    ) {
         SongListComponent(
             isSearching = false,
             isLoading = false,

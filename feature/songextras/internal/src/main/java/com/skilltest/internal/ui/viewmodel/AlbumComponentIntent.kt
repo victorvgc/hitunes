@@ -1,6 +1,7 @@
 package com.skilltest.internal.ui.viewmodel
 
 import com.skilltest.core.presentation.viewmodel.BaseIntent
+import com.skilltest.internal.ui.model.UiAlbum
 
 sealed class AlbumComponentIntent(
     name: String
@@ -19,5 +20,5 @@ sealed class AlbumComponentIntent(
 
     data class LoadingDetails(val albumId: String) : AlbumComponentIntent("LoadingDetails")
 
-    data class OnClickTrack(val trackId: String) : AlbumComponentIntent("OnClickTrack")
+    data class OnClickTrack(val track: UiAlbum.UiTrack) : AlbumComponentIntent("OnClickTrack")
 }

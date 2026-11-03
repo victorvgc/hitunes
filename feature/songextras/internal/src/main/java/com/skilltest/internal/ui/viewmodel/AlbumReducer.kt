@@ -3,14 +3,15 @@ package com.skilltest.internal.ui.viewmodel
 import com.skilltest.core.presentation.viewmodel.BaseReducer
 import com.skilltest.core.presentation.viewmodel.Reduction
 import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase
-import com.skilltest.domain.model.Album
-import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase.*
+import com.skilltest.domain.usecase.LoadAlbumDetailsUseCase.Request
 import com.skilltest.internal.ui.model.UiAlbum
 import com.skilltest.internal.ui.model.UiAlbum.Companion.toUi
+import com.skilltest.internal.ui.viewmodel.AlbumComponentEffect.NavigateToAlbumDetails
+import com.skilltest.internal.ui.viewmodel.AlbumComponentIntent.LoadAlbumDetails
+import com.skilltest.internal.ui.viewmodel.AlbumComponentIntent.OnClickTrack
+import com.skilltest.internal.ui.viewmodel.AlbumComponentIntent.OpenAlbumDetails
 import com.skilltest.internal.ui.viewmodel.AlbumStateChange.DisplayAlbumDetails
 import com.skilltest.internal.ui.viewmodel.AlbumStateChange.LoadingDetails as LoadingDetailsState
-import com.skilltest.internal.ui.viewmodel.AlbumComponentEffect.*
-import com.skilltest.internal.ui.viewmodel.AlbumComponentIntent.*
 
 class AlbumReducer(
     private val loadAlbumDetailsUseCase: LoadAlbumDetailsUseCase
@@ -52,7 +53,7 @@ class AlbumReducer(
         }
 
         is OnClickTrack -> {
-            Reduction.effect(AlbumComponentEffect.NavigateToSongDetails(intent.trackId))
+            Reduction.effect(AlbumComponentEffect.NavigateToSongDetails(intent.track.toDomain()))
         }
     }
 }
