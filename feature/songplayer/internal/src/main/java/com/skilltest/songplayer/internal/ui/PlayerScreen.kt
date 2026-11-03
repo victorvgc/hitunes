@@ -5,6 +5,7 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -39,6 +40,9 @@ fun SongDetailsScreen(
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     val state by viewModel.state.collectAsState()
+    LaunchedEffect(track.id) {
+        viewModel.onIntent(com.skilltest.songplayer.internal.viewmodel.PlayerIntent.DisableRepeat)
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         DetailsTopBar(
             title = (state.track ?: track).name,

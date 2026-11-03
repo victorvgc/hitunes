@@ -87,6 +87,8 @@ class MainActivity : ComponentActivity() {
                                             )
                                         )
                                     },
+                                    sharedTransitionScope = this@SharedTransitionLayout,
+                                    animatedVisibilityScope = this@composable,
                                 )
                             }
                             composable<Route.Album> { entry ->

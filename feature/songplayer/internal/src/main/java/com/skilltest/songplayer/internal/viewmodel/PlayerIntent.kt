@@ -14,6 +14,7 @@ sealed class PlayerIntent(name: String) : BaseIntent(name) {
     data object Forward : PlayerIntent("Forward")
     data object Backward : PlayerIntent("Backward")
     data object ToggleOnRepeat : PlayerIntent("ToggleOnRepeat")
+    internal data object DisableRepeat : PlayerIntent("DisableRepeat")
     data class SeekTo(val positionMs: Long) : PlayerIntent("SeekTo")
 
     internal data object SyncPlayback : PlayerIntent("SyncPlayback")

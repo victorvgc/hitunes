@@ -16,11 +16,16 @@ class PlayerReducer(
 ) : BaseReducer<PlayerState, PlayerIntent, PlayerEffect> {
     private var controller: MediaController? = null
     private var pendingTrack: PlayerIntent.PlayTrack? = null
+    private var resetRepeatOnBind = false
     private var currentQueue: List<Track> = emptyList()
 
     fun bind(controller: MediaController?) {
         this.controller = controller
         if (controller != null) {
+            if (resetRepeatOnBind) {
+                controller.repeatMode = Player.REPEAT_MODE_OFF
+                resetRepeatOnBind = false
+            }
             pendingTrack?.let {
                 pendingTrack = null
                 playTrack(controller, it)
@@ -66,13 +71,15 @@ class PlayerReducer(
 
             PlayerIntent.ToggleOnRepeat -> {
                 player?.let {
-                    it.repeatMode = if (it.repeatMode == Player.REPEAT_MODE_OFF) {
-                        Player.REPEAT_MODE_ALL
-                    } else {
-                        Player.REPEAT_MODE_OFF
-                    }
+                    it.repeatMode = toggledRepeatMode(it.repeatMode)
                 }
                 previousState
+            }
+
+            PlayerIntent.DisableRepeat -> {
+                if (player == null) resetRepeatOnBind = true
+                else player.repeatMode = Player.REPEAT_MODE_OFF
+                previousState.copy(isRepeating = false)
             }
 
             PlayerIntent.Forward -> {
@@ -96,7 +103,13 @@ class PlayerReducer(
             PlayerIntent.SyncPlayback -> previousState
             is PlayerIntent.TrackStarted -> previousState
         }
-        return Reduction.state(PlayerStateChange(snapshot(fallback)))
+        val nextState = snapshot(fallback)
+        return Reduction.state(
+            PlayerStateChange(
+                if (intent == PlayerIntent.DisableRepeat) nextState.copy(isRepeating = false)
+                else nextState
+            )
+        )
     }
 
     private fun playTrack(player: MediaController, request: PlayerIntent.PlayTrack) {
@@ -141,7 +154,7 @@ class PlayerReducer(
         }
         return PlayerState(
             track = track,
-            isRepeating = player.repeatMode != Player.REPEAT_MODE_OFF,
+            isRepeating = isCurrentTrackRepeating(player.repeatMode),
             isPlaying = player.isPlaying,
             positionMs = player.currentPosition.coerceAtLeast(0),
             durationMs = player.duration.takeIf { it != C.TIME_UNSET && it > 0 } ?: 0,
@@ -150,3 +163,8 @@ class PlayerReducer(
         )
     }
 }
+
+internal fun toggledRepeatMode(currentMode: Int): Int =
+    if (currentMode == Player.REPEAT_MODE_ONE) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
+
+internal fun isCurrentTrackRepeating(mode: Int): Boolean = mode == Player.REPEAT_MODE_ONE

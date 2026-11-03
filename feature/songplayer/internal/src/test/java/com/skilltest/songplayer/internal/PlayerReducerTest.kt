@@ -1,5 +1,6 @@
 package com.skilltest.songplayer.internal
 
+import androidx.media3.common.Player
 import com.skilltest.domain.model.RecentlyPlayed
 import com.skilltest.domain.model.ResultWrapper
 import com.skilltest.domain.model.SearchResult
@@ -9,6 +10,8 @@ import com.skilltest.domain.usecase.AddToRecentlyPlayedUseCase
 import com.skilltest.songplayer.internal.viewmodel.PlayerIntent
 import com.skilltest.songplayer.internal.viewmodel.PlayerReducer
 import com.skilltest.songplayer.internal.viewmodel.PlayerState
+import com.skilltest.songplayer.internal.viewmodel.isCurrentTrackRepeating
+import com.skilltest.songplayer.internal.viewmodel.toggledRepeatMode
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -41,6 +44,25 @@ class PlayerReducerTest {
         reducer.reduce(PlayerState(), PlayerIntent.TrackStarted(track))
 
         assertEquals(track, repository.lastAddedTrack)
+    }
+
+    @Test
+    fun repeatToggleLoopsOnlyTheCurrentTrackAndCanBeTurnedOff() {
+        val enabled = toggledRepeatMode(Player.REPEAT_MODE_OFF)
+
+        assertEquals(Player.REPEAT_MODE_ONE, enabled)
+        assertEquals(true, isCurrentTrackRepeating(enabled))
+        assertEquals(Player.REPEAT_MODE_OFF, toggledRepeatMode(enabled))
+        assertEquals(false, isCurrentTrackRepeating(Player.REPEAT_MODE_ALL))
+    }
+
+    @Test
+    fun openingSongDetailsClearsRepeatBeforeControllerConnects() = runTest {
+        val previous = PlayerState(track = track, isRepeating = true)
+
+        val reduction = reducer.reduce(previous, PlayerIntent.DisableRepeat)
+
+        assertEquals(false, reduction.partialStateChange.reduce(previous).isRepeating)
     }
 
     private class RecordingRepository : SongRepository {

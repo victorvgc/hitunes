@@ -51,6 +51,7 @@ import com.skilltest.design.theme.Dimens
 import com.skilltest.design.util.ComponentPreview
 import com.skilltest.design.util.PreviewBox
 import com.skilltest.design.util.ScreenPreview
+import com.skilltest.design.util.sharedImageTransition
 import com.skilltest.domain.model.Track
 import com.skilltest.songplayer.internal.viewmodel.PlayerIntent
 import com.skilltest.songplayer.internal.viewmodel.PlayerState
@@ -112,7 +113,7 @@ internal fun MiniPlayerContent(
                     ThumbnailImage(
                         url = track.artworkUrl,
                         contentDescription = null,
-                        modifier = Modifier.artworkModifier(
+                        modifier = Modifier.sharedImageTransition(
                             size = Dimens.size52,
                             trackId = track.id,
                             sharedTransitionScope = sharedTransitionScope,
@@ -134,6 +135,7 @@ internal fun MiniPlayerContent(
                         )
                     }
                 }
+                RepeatAction(state, onIntent, iconSize = Dimens.size16)
                 PlayPauseAction(state, onIntent)
             }
         }
@@ -164,7 +166,7 @@ internal fun SongDetailsContent(
             ThumbnailImage(
                 url = track.artworkUrl,
                 contentDescription = track.name,
-                modifier = Modifier.artworkModifier(
+                modifier = Modifier.sharedImageTransition(
                     size = Dimens.size246,
                     trackId = track.id,
                     sharedTransitionScope = sharedTransitionScope,
@@ -196,26 +198,6 @@ internal fun SongDetailsContent(
             Spacer(modifier = Modifier.height(Dimens.padding16))
             PlaybackActions(state, onIntent)
         }
-    }
-}
-
-@Composable
-private fun Modifier.artworkModifier(
-    size: Dp,
-    trackId: String,
-    sharedTransitionScope: SharedTransitionScope?,
-    animatedVisibilityScope: AnimatedVisibilityScope?,
-): Modifier {
-    if (sharedTransitionScope == null || animatedVisibilityScope == null) {
-        return this.size(size)
-    }
-    return with(sharedTransitionScope) {
-        Modifier
-            .sharedElement(
-                rememberSharedContentState(key = "player-artwork-$trackId"),
-                animatedVisibilityScope = animatedVisibilityScope,
-            )
-            .size(size)
     }
 }
 
@@ -271,24 +253,33 @@ private fun PlaybackActions(
             }
         }
 
-        val accRepeat =
-            stringResource(com.skilltest.songplayer.internal.R.string.acc_play_on_repeat)
+        RepeatAction(state, onIntent)
+    }
+}
 
-        IconButton(
-            onClick = { onIntent(PlayerIntent.ToggleOnRepeat) },
-            enabled = state.track != null,
-            modifier = Modifier.semantics { contentDescription = accRepeat },
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(Dimens.size36)
-                    .rotate(180f),
-                painter = painterResource(R.drawable.ic_play_on_repeat),
-                contentDescription = stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song),
-                tint = if (state.isRepeating) MaterialTheme.colorScheme.tertiary
-                else MaterialTheme.colorScheme.onSurface
-            )
-        }
+@Composable
+private fun RepeatAction(
+    state: PlayerState,
+    onIntent: (PlayerIntent) -> Unit,
+    iconSize: Dp = Dimens.size24,
+) {
+    val accessibilityText =
+        stringResource(com.skilltest.songplayer.internal.R.string.acc_play_on_repeat)
+
+    IconButton(
+        onClick = { onIntent(PlayerIntent.ToggleOnRepeat) },
+        enabled = state.track != null,
+        modifier = Modifier.semantics { contentDescription = accessibilityText },
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(iconSize)
+                .rotate(180f),
+            painter = painterResource(R.drawable.ic_play_on_repeat),
+            contentDescription = null,
+            tint = if (state.isRepeating) MaterialTheme.colorScheme.onSurface
+            else MaterialTheme.colorScheme.outline,
+        )
     }
 }
 
