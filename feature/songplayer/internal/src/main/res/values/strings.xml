@@ -5,4 +5,5 @@
     <string name="acc_next_song">next song</string>
     <string name="acc_previous_song">previous song</string>
     <string name="acc_play_on_repeat">Play on repeat</string>
+    <string name="album">Album</string>
 </resources>

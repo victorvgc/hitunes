@@ -80,6 +80,20 @@ private const val DARK = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL
 )
 annotation class ScreenPreview
 
+@Preview(
+    name = "Auto - Light",
+    device = AUTO,
+    uiMode = UI_MODE_NIGHT_NO or UI_MODE_TYPE_CAR,
+    showBackground = true
+)
+@Preview(
+    name = "Auto - Dark",
+    device = AUTO,
+    uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_CAR,
+    showBackground = true
+)
+annotation class AutoPreview
+
 @PreviewLightDark
 @PreviewFontScale
 annotation class ComponentPreview

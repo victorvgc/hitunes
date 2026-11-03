@@ -13,6 +13,7 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import com.skilltest.design.theme.Dimens
 import com.skilltest.design.theme.HiTunesTheme
 import com.skilltest.domain.model.Track
+import com.skilltest.songplayer.internal.ui.CarSongDetailsContent
 import com.skilltest.songplayer.internal.ui.MiniPlayerContent
 import com.skilltest.songplayer.internal.ui.SongDetailsContent
 import com.skilltest.songplayer.internal.viewmodel.PlayerState
@@ -83,11 +84,34 @@ class PlayerScreenshotTest {
         captureSongDetailsPane(width = 640.dp, height = 800.dp)
     }
 
-    // Right half of an Android Automotive screen (1024x768): short enough to stack and scroll.
+    // Car screens get their own song page: cover next to the info, one row of controls.
     @Test
     @Config(qualifiers = "w1024dp-h768dp")
-    fun songDetailsAutoPane() {
-        captureSongDetailsPane(width = 512.dp, height = 768.dp)
+    fun carSongDetails() {
+        captureRoboImage {
+            HiTunesTheme(darkTheme = false) {
+                Box(
+                    modifier = Modifier
+                        .size(1024.dp, 768.dp)
+                        .background(MaterialTheme.colorScheme.background),
+                ) {
+                    CarSongDetailsContent(
+                        track = track,
+                        state = PlayerState(
+                            track = track,
+                            isPlaying = true,
+                            positionMs = 83_000,
+                            durationMs = 357_000,
+                            hasNext = true,
+                            hasPrevious = true,
+                        ),
+                        onIntent = {},
+                        onBack = {},
+                        onAlbum = {},
+                    )
+                }
+            }
+        }
     }
 
     private fun captureSongDetailsPane(width: Dp, height: Dp) {

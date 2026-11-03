@@ -248,39 +248,8 @@ private fun PlaybackActions(
         ) {
             PlayPauseAction(state, onIntent, size = Dimens.size72)
 
-            val accPreviousTrack =
-                stringResource(com.skilltest.songplayer.internal.R.string.acc_previous_song)
-
-            IconButton(
-                onClick = { onIntent(PlayerIntent.Previous) },
-                enabled = state.hasPrevious,
-                modifier = Modifier.semantics { contentDescription = accPreviousTrack },
-            ) {
-                Icon(
-                    modifier = Modifier.size(Dimens.size36),
-                    painter = painterResource(R.drawable.ic_backward),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            val accNextTrack =
-                stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song)
-
-            IconButton(
-                onClick = { onIntent(PlayerIntent.Next) },
-                enabled = state.hasNext,
-                modifier = Modifier.semantics { contentDescription = accNextTrack },
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(Dimens.size36)
-                        .rotate(180f),
-                    painter = painterResource(R.drawable.ic_backward),
-                    contentDescription = stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            PreviousAction(state, onIntent)
+            NextAction(state, onIntent)
         }
 
         RepeatAction(state, onIntent)
@@ -288,7 +257,55 @@ private fun PlaybackActions(
 }
 
 @Composable
-private fun RepeatAction(
+internal fun PreviousAction(
+    state: PlayerState,
+    onIntent: (PlayerIntent) -> Unit,
+    iconSize: Dp = Dimens.size36,
+) {
+    val accPreviousTrack =
+        stringResource(com.skilltest.songplayer.internal.R.string.acc_previous_song)
+
+    IconButton(
+        onClick = { onIntent(PlayerIntent.Previous) },
+        enabled = state.hasPrevious,
+        modifier = Modifier.semantics { contentDescription = accPreviousTrack },
+    ) {
+        Icon(
+            modifier = Modifier.size(iconSize),
+            painter = painterResource(R.drawable.ic_backward),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+internal fun NextAction(
+    state: PlayerState,
+    onIntent: (PlayerIntent) -> Unit,
+    iconSize: Dp = Dimens.size36,
+) {
+    val accNextTrack =
+        stringResource(com.skilltest.songplayer.internal.R.string.acc_next_song)
+
+    IconButton(
+        onClick = { onIntent(PlayerIntent.Next) },
+        enabled = state.hasNext,
+        modifier = Modifier.semantics { contentDescription = accNextTrack },
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(iconSize)
+                .rotate(180f),
+            painter = painterResource(R.drawable.ic_backward),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+internal fun RepeatAction(
     state: PlayerState,
     onIntent: (PlayerIntent) -> Unit,
     iconSize: Dp = Dimens.size24,
@@ -314,7 +331,7 @@ private fun RepeatAction(
 }
 
 @Composable
-private fun PlayPauseAction(
+internal fun PlayPauseAction(
     state: PlayerState,
     onIntent: (PlayerIntent) -> Unit,
     size: Dp = Dimens.size48
@@ -349,7 +366,12 @@ private fun PlayPauseAction(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PlayerSeekBar(state: PlayerState, onIntent: (PlayerIntent) -> Unit) {
+internal fun PlayerSeekBar(
+    state: PlayerState,
+    onIntent: (PlayerIntent) -> Unit,
+    thumbSize: Dp = Dimens.size16,
+    trackThickness: Dp = Dimens.size4
+) {
     var dragging by remember { mutableStateOf<Float?>(null) }
     val progress = if (state.durationMs > 0) {
         (state.positionMs.toFloat() / state.durationMs).coerceIn(0f, 1f)
@@ -374,7 +396,7 @@ private fun PlayerSeekBar(state: PlayerState, onIntent: (PlayerIntent) -> Unit) 
         thumb = {
             Box(
                 modifier = Modifier
-                    .size(Dimens.size16)
+                    .size(thumbSize)
                     .background(
                         color = MaterialTheme.colorScheme.onSurface,
                         shape = CircleShape
@@ -394,9 +416,11 @@ private fun PlayerSeekBar(state: PlayerState, onIntent: (PlayerIntent) -> Unit) 
                     Modifier
                         .fillMaxWidth(fraction)
                         .align(Alignment.CenterStart)
-                        .height(Dimens.size4)
+                        .height(trackThickness)
                         .background(
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = MaterialTheme.colorScheme.onSurface.copy(
+                                alpha = .8f
+                            ),
                             shape = RoundedCornerShape(
                                 topStart = Dimens.radius8,
                                 bottomStart = Dimens.radius8
@@ -408,7 +432,7 @@ private fun PlayerSeekBar(state: PlayerState, onIntent: (PlayerIntent) -> Unit) 
                     Modifier
                         .fillMaxWidth(1f - fraction)
                         .align(Alignment.CenterEnd)
-                        .height(Dimens.size4)
+                        .height(trackThickness)
                         .background(
                             color = MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(
@@ -471,7 +495,7 @@ private fun SongDetailsContentPreview() {
     }
 }
 
-private val previewTrack = Track(
+internal val previewTrack = Track(
     id = "track-1",
     name = "Thriller",
     artistName = "Michael Jackson",
