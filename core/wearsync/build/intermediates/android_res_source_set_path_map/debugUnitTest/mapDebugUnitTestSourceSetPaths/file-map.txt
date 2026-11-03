@@ -1,4 +1,0 @@
-com.skilltest.core.wearsync.test.wearsync-mergeDebugUnitTestResources-0 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/intermediates/incremental/debugUnitTest/mergeDebugUnitTestResources/merged.dir
-com.skilltest.core.wearsync.test.wearsync-mergeDebugUnitTestResources-1 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/intermediates/incremental/debugUnitTest/mergeDebugUnitTestResources/stripped.dir
-com.skilltest.core.wearsync.test.wearsync-debugUnitTest-2 /Users/carvalho/Documents/studies/HiTunes/core/wearsync/build/intermediates/merged_res/debugUnitTest/mergeDebugUnitTestResources
-gradleHome-0 /Users/carvalho/.gradle
